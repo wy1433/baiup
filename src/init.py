@@ -48,6 +48,13 @@ class InitProcessor():
                 continue
             for ins in c[t]:
                 host = ins['host']
+                if 'port' not in ins:
+                    if t == 'meta':
+                        ins['port'] = 8010
+                    elif t == 'store':
+                        ins['port'] = 8110
+                    elif t == 'db':
+                        ins['port'] = 28282
                 port = ins['port']
                 k = host + ':' + str(port)
                 if t == 'meta':
