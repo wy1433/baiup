@@ -1,0 +1,11 @@
+#!/bin/bash
+
+self_port=`grep port ../conf/gflags.conf | awk -F"=" '{print $2}'|sed 's/ //g'`
+echo "Restart... $(date) " >> restart.log
+export TCMALLOC_SAMPLE_PARAMETER=524288
+export TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=209715200
+ulimit -u 10240
+# ulimit -n 65536 
+ulimit -c unlimited
+sleep 5
+cd .. && nohup ./bin/baikalStore global:$self_port
