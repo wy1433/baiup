@@ -1,0 +1,13 @@
+meta:
+- host: 1.1.1.1
+  port: 2222
+- host: 2.2.2.2
+  port: 2222
+- host: 3.3.3.3
+  port: 3333
+
+db:
+- host: 1.1.0.1
+  port: 1111
+- host: 1.1.0.2
+  port: 1111

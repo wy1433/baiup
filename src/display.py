@@ -15,23 +15,38 @@ class DisplayProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "python main.py display clustername"
+        print "python main.py display clustername [db|store|meta|node]"
 
     def process(self):
-        if len(sys.argv) != 3:
+        if len(sys.argv) <= 3:
             self.usage()
             exit(0)
         self.clusterName = sys.argv[2]
 	self.deployConfig = DeployConfig.loadClusterDeployConfig(self.clusterName)
         self.rootDir = self.deployConfig["global"]["root_dir"]
+
+        self.module = ''
+        self.node = ''
+        if len(sys.argv) >= 4:
+            s = sys.argv[3]
+            if s in ('meta','db','store'):
+                self.module = s
+            else:
+                self.node = s
+
         self.displayCluster()
 
     def displayCluster(self):
         metaList = DeployConfig.getMetaList(self.deployConfig)
         metaClient = MetaClient(','.join(metaList))
-        for mod in ("meta","store","db"):
+	moduleList = ['meta','store','db']
+	if self.module != '':
+	    moduleList = [self.module]
+        for mod in moduleList:
             for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, mod):
                 key = instance.node
+		if self.node != '' and self.node != key:
+		    continue
                 checkRet = instance.check()
                 if checkRet :
                     nodeStatus = 'UP'
