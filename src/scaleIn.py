@@ -12,9 +12,9 @@ import shutil
 import util
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
-from instance import Instance
 from metaClient import MetaClient
 from common import *
+from instance import Instance
 import operator
 
 

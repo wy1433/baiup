@@ -97,13 +97,13 @@ class ServerConfig():
         serverConfig = {}
         configPath = os.path.join(REPO_DIR, version, "conf")
         if not os.path.exists(configPath):
-	    print configPath
-	    print "package %s has not config" % version
-	    exit(1)
+            print configPath
+            print "package %s has not config" % version
+            exit(1)
         for module in ('db','meta','store'):
             subConfigFile = os.path.join(configPath, module + ".conf")
             if not os.path.exists(subConfigFile):
-		print "%s has no config"
+                print "%s has no config"
                 continue
             subConfig = ServerConfig.load(subConfigFile)
             if module not in serverConfig:

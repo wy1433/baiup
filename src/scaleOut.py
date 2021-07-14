@@ -51,6 +51,13 @@ class ScaleOutProcessor():
             if module not in self.scaleOutConfig:
                 continue
             for ins in self.scaleOutConfig[module]:
+                if 'port' not in ins:
+                    if module == 'meta':
+                        ins['port'] = 8010
+                    elif module == 'store':
+                        ins['port'] = 8110
+                    elif module == 'db':
+                        ins['port'] = 28282
                 key = "%s:%d" % (ins['host'], ins['port'])
                 if key not in self.oldInstanceDict:
                     self.deployConfig[module].append(ins)
@@ -104,8 +111,8 @@ class ScaleOutProcessor():
                 newConfigFile = os.path.join(configDir, "%s.conf" % instance.node)
                 shutil.copy(newConfigFile, oldConfigFile)
 
-
         DeployConfig.updateClusterDeployConfig(self.clusterName, self.deployConfig)
+        return
         for module in ['meta','store','db']:
             for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, module):
                 oldConfigFile = os.path.join(oldConfigDir, "%s.conf" % instance.node)

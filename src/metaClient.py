@@ -78,7 +78,7 @@ class MetaClient:
             return []
         
 
-    def setInstanceMigrate(self, instane):
+    def setInstanceMigrate(self, instance):
         setMigrateQuery = '{"op_type": "OP_SET_INSTANCE_MIGRATE","instance": {"address" : "%s"}}' % instance
         res, errMsg = self.post('/MetaService/meta_manager', setMigrateQuery)
         try:
