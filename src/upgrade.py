@@ -8,6 +8,7 @@ import yaml
 import paramiko
 import subprocess
 import util
+import shutil
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
@@ -15,7 +16,7 @@ from instance import Instance
 
 class UpgradeProcessor():
     def __init__(self):
-        self.pkgPath = "./package"
+        self.pkgPath = "./repo"
         pass
 
     def usage(self):
@@ -64,7 +65,8 @@ class UpgradeProcessor():
                 if self.node != '' and instance.node != self.node:
                     continue
                 if upgradeCount != 0:
-                    time.sleep(5)
+                    time.sleep(10)
+		print "update bin, %s" % instance.node
                 instance.updateRemoteBin()
                 instance.updateRemoteConfig(os.path.join(localConfigDir, "%s.conf" % instance.node))
                 instance.start()

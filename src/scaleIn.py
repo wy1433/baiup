@@ -14,6 +14,8 @@ from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
 from metaClient import MetaClient
+from common import *
+import operator
 
 
 class ScaleInProcessor():
@@ -104,7 +106,7 @@ class ScaleInProcessor():
         configDir = os.path.join("./storage/oplist", self.uuid, "config")
         oldConfigDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
         ServerConfig.initServerConfig(self.deployConfig, configDir)
-        for instance in DeployConfig.getInstanceListByDeployConfig(self.deployConfig):
+        for instance in Instance.getInstanceListByDeployConfig(self.deployConfig):
             configFileName = "%s.conf" % instance.node
             oldConfigFile = os.path.join(oldConfigDir, configFileName)
             newConfigFile = os.path.join(configDir, configFileName)

@@ -8,6 +8,7 @@ import yaml
 import paramiko
 import subprocess
 import util
+import shutil
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
@@ -79,7 +80,7 @@ class UpdateProcessor():
                     exit(1)
                 else:
                     print "start %s succ!" % instance.node
-                oldConfigFile = os.path.join("storage/clusters", self.clusterName, "config", "%s.conf" % instance.node)
+                oldConfigFile = os.path.join("storage/clusters", self.clusterName, "cache-conf", "%s.conf" % instance.node)
                 shutil.copy(configFile, oldConfigFile)
 
                 

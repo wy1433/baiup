@@ -18,7 +18,7 @@ class DisplayProcessor():
         print "python main.py display clustername [db|store|meta|node]"
 
     def process(self):
-        if len(sys.argv) <= 3:
+        if len(sys.argv) < 3:
             self.usage()
             exit(0)
         self.clusterName = sys.argv[2]
