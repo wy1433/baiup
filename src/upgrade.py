@@ -69,6 +69,7 @@ class UpgradeProcessor():
 		print "update bin, %s" % instance.node
                 instance.updateRemoteBin()
                 instance.updateRemoteConfig(os.path.join(localConfigDir, "%s.conf" % instance.node))
+		instance.stop()
                 instance.start()
                 print "upgrade %s \033[1;32m succ \033[0m!" % instance.node
                 upgradeCount += 1

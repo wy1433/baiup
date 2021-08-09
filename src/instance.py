@@ -8,6 +8,7 @@ import copy
 import time
 import sys
 from common import *
+from storeInteract import StoreInteract
 
 class Instance():
     def __init__(self, host, port,clusterName,ty,version, path):
@@ -20,6 +21,8 @@ class Instance():
         self.version = version
         self.config = None
         self.node = "%s:%d" % (self.host, self.port)
+        if self.type == 'store':
+            self.storeInteract = StoreInteract(self.host, self.port)
 
 
     def setConfig(self, config):
@@ -120,7 +123,19 @@ class Instance():
     def getAliveTime(self):
         return util.getAliveTime(self.host, self.port, self.type)
 
+    def transferAllLeader(self):
+	print "transfer leader", self.node
+	regionList = self.storeInteract.getRegionList()
+	if regionList == None:
+	    print "get region list faild!", self.node
+	    exit(1)
+	for reg in regionList:
+	    if reg['leader'] == self.node:
+		self.storeInteract.quitLeader(reg['region_id'])
+	
     def stop(self):
+	if self.type == 'store':
+	    self.transferAllLeader()
         cmd = "cd %s && bash stop.sh" % self.path
         sys.stdout.write("stop instance %s\r" % self.node)
         sys.stdout.flush()
