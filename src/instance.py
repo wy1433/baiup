@@ -102,6 +102,8 @@ class Instance():
         
 
     def start(self):
+	if self.type == 'store' and self.check():
+	    self.transferAllLeader()
         cmd = "cd %s && bash restart_by_supervise.sh" % self.path
         sys.stdout.write("start instance %s\r" % self.node)
         sys.stdout.flush()
@@ -115,6 +117,7 @@ class Instance():
             exit(0)
 
     def restart(self):
+	#self.stop()
         self.start()
 
     def getStartTime(self):

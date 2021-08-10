@@ -84,14 +84,16 @@ class EditConfigProcessor():
                 
         
     def updateConfig(self):
-        localConfigDir = os.path.join('./cache/oplist', self.uuid, 'config')
-        oldConfigDir = os.path.join('./cache/clusters', self.clusterName, 'config')
+        localConfigDir = os.path.join('./storage/oplist', self.uuid, 'config')
+        oldConfigDir = os.path.join('./storage/clusters', self.clusterName, 'cache-conf')
         ServerConfig.initServerConfig(self.deployConfig, localConfigDir)
         instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig)
         for module in ['meta','store','db']:
             for ins in Instance.getInstanceListByDeployConfig(self.deployConfig, module):
                 oldConfigFile = os.path.join(oldConfigDir, "%s.conf" % ins.node)
                 newConfigFile = os.path.join(localConfigDir, "%s.conf" % ins.node)
+		print newConfigFile
+		print oldConfigFile
                 oldConfig = {}
                 if os.path.exists(oldConfigFile):
                     oldConfig = ServerConfig.load(oldConfigFile)
@@ -119,7 +121,7 @@ class EditConfigProcessor():
                     path = ins['path']
                 else:
                     path = util.getDefaultPath(name, port)
-                localConfigPath = os.path.join("cache/clusters",self.clusterName,"config","%s-%d.conf" % (host, port))
+                localConfigPath = os.path.join("storage/clusters",self.clusterName,"config","%s-%d.conf" % (host, port))
                 remoteConfigPath = os.path.join(rootDir, path, "config", "gflags.conf")
                 if not util.execScpRemoteCommand(localConfigPath, remoteConfigPath):
                     print "scp config faild:", "%s-%d.conf" % (host, port)

@@ -103,7 +103,6 @@ class ServerConfig():
         for module in ('db','meta','store'):
             subConfigFile = os.path.join(configPath, module + ".conf")
             if not os.path.exists(subConfigFile):
-                print "%s has no config"
                 continue
             subConfig = ServerConfig.load(subConfigFile)
             if module not in serverConfig:

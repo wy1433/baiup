@@ -50,6 +50,7 @@ class ScaleInProcessor():
             key = instance.node
             if key != self.node:
                  continue
+	    haveScaleIn = True
             scaleInType = instance.type
 
             if scaleInType == 'store':
@@ -82,7 +83,6 @@ class ScaleInProcessor():
                 exit(1)
             print "stop instance %s succ!" % key
             instance.removeRemoteDir()
-            haveScaleIn = True
         if not haveScaleIn:
             print "has no instance %s" % self.node
 
