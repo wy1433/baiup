@@ -50,7 +50,7 @@ class ScaleInProcessor():
             key = instance.node
             if key != self.node:
                  continue
-	    haveScaleIn = True
+            haveScaleIn = True
             scaleInType = instance.type
 
             if scaleInType == 'store':
@@ -100,7 +100,7 @@ class ScaleInProcessor():
         DeployConfig.updateClusterDeployConfig(self.clusterName, self.deployConfig)
 
         if scaleInType == 'meta':
-	    self.updateConfig()
+            self.updateConfig()
 
     def updateConfig(self):
         configDir = os.path.join("./storage/oplist", self.uuid, "config")

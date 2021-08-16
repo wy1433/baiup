@@ -102,8 +102,8 @@ class Instance():
         
 
     def start(self):
-	if self.type == 'store' and self.check():
-	    self.transferAllLeader()
+        if self.type == 'store' and self.check():
+            self.transferAllLeader()
         cmd = "cd %s && bash restart_by_supervise.sh" % self.path
         sys.stdout.write("start instance %s\r" % self.node)
         sys.stdout.flush()
@@ -117,7 +117,7 @@ class Instance():
             exit(0)
 
     def restart(self):
-	#self.stop()
+        #self.stop()
         self.start()
 
     def getStartTime(self):
@@ -127,18 +127,18 @@ class Instance():
         return util.getAliveTime(self.host, self.port, self.type)
 
     def transferAllLeader(self):
-	print "transfer leader", self.node
-	regionList = self.storeInteract.getRegionList()
-	if regionList == None:
-	    print "get region list faild!", self.node
-	    exit(1)
-	for reg in regionList:
-	    if reg['leader'] == self.node:
-		self.storeInteract.quitLeader(reg['region_id'])
-	
+        print "transfer leader", self.node
+        regionList = self.storeInteract.getRegionList()
+        if regionList == None:
+            print "get region list faild!", self.node
+            exit(1)
+        for reg in regionList:
+            if reg['leader'] == self.node:
+                self.storeInteract.quitLeader(reg['region_id'])
+        
     def stop(self):
-	if self.type == 'store':
-	    self.transferAllLeader()
+        if self.type == 'store':
+            self.transferAllLeader()
         cmd = "cd %s && bash stop.sh" % self.path
         sys.stdout.write("stop instance %s\r" % self.node)
         sys.stdout.flush()

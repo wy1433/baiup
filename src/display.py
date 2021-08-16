@@ -22,7 +22,7 @@ class DisplayProcessor():
             self.usage()
             exit(0)
         self.clusterName = sys.argv[2]
-	self.deployConfig = DeployConfig.loadClusterDeployConfig(self.clusterName)
+        self.deployConfig = DeployConfig.loadClusterDeployConfig(self.clusterName)
         self.rootDir = self.deployConfig["global"]["root_dir"]
 
         self.module = ''
@@ -39,14 +39,14 @@ class DisplayProcessor():
     def displayCluster(self):
         metaList = DeployConfig.getMetaList(self.deployConfig)
         metaClient = MetaClient(','.join(metaList))
-	moduleList = ['meta','store','db']
-	if self.module != '':
-	    moduleList = [self.module]
+        moduleList = ['meta','store','db']
+        if self.module != '':
+            moduleList = [self.module]
         for mod in moduleList:
             for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, mod):
                 key = instance.node
-		if self.node != '' and self.node != key:
-		    continue
+                if self.node != '' and self.node != key:
+                    continue
                 checkRet = instance.check()
                 if checkRet :
                     nodeStatus = 'UP'

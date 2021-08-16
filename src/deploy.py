@@ -16,7 +16,7 @@ from instance import Instance
 
 class DeployProcessor():
     def __init__(self):
-	pass
+        pass
 
     def usage(self):
         print "usage python deploy.py deploy clustername version config.yaml"

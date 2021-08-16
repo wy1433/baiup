@@ -66,7 +66,7 @@ class UpgradeProcessor():
                     continue
                 if upgradeCount != 0:
                     time.sleep(10)
-		print "update bin, %s" % instance.node
+                print "update bin, %s" % instance.node
                 instance.updateRemoteBin()
                 instance.updateRemoteConfig(os.path.join(localConfigDir, "%s.conf" % instance.node))
                 instance.restart()

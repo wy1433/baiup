@@ -59,9 +59,9 @@ class EditConfigProcessor():
         if eqConfig:
             print "config has no change!"
         else:
-	    confirm = raw_input("确定是否要修改(Y/N):")
-	    if confirm.strip() != 'Y':
-		return
+            confirm = raw_input("确定是否要修改(y/n):")
+            if confirm.strip().lower() != 'y':
+                return
             self.deployConfig = oldDeployConfig
             self.updateConfig()
             DeployConfig.updateClusterDeployConfig(self.clusterName, self.deployConfig)
@@ -92,8 +92,8 @@ class EditConfigProcessor():
             for ins in Instance.getInstanceListByDeployConfig(self.deployConfig, module):
                 oldConfigFile = os.path.join(oldConfigDir, "%s.conf" % ins.node)
                 newConfigFile = os.path.join(localConfigDir, "%s.conf" % ins.node)
-		print newConfigFile
-		print oldConfigFile
+                print newConfigFile
+                print oldConfigFile
                 oldConfig = {}
                 if os.path.exists(oldConfigFile):
                     oldConfig = ServerConfig.load(oldConfigFile)

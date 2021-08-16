@@ -104,6 +104,8 @@ class InitProcessor():
         self.deployConfig['store'] = []
         for store in storeList:
             s = {"host":str(store.split(':')[0]), "port":int(store.split(':')[1])}
+            if store == '172.24.64.21:8112':
+                continue
             self.deployConfig['store'].append(s)
 
         msg = self.checkConfig()

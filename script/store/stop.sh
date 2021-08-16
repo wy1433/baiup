@@ -1,5 +1,5 @@
 #!/bin/bash
-path=store
+path=__REP_PATH__REP__
 proj=baikalStore
 self_port=`grep port conf/gflags.conf | awk -F"=" '{print $2}'|sed 's/ //g'`
 pid=`ps -ef | grep "supervise" | grep "${path}" |awk '{print $2}'`

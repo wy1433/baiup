@@ -9,8 +9,8 @@ import json
 
 class StoreInteract():
     def __init__(self, host, port):
-	self.host = host
-	self.port = int(port)
+        self.host = host
+        self.port = int(port)
 
 
  
@@ -18,48 +18,50 @@ class StoreInteract():
     def getRegionList(self):
         res = None
         uri = 'StoreService/query_region'
-	data = '{}'
-	res = self.post(uri, data)
+        data = '{}'
+        res = self.post(uri, data)
         if res == None:
             return None
         try:
+            if 'region_leaders' not in res:
+                return []
             return res['region_leaders']
         except Exception,e:
             print traceback.format_exc()
             return None
 
     def getRegionInfo(self, regionid):
-	res = None
+        res = None
         uri = 'StoreService/query_region'
-	data = '{"region_ids":[%d]}' % regionid
-	res = self.post(uri, data)
+        data = '{"region_ids":[%d]}' % regionid
+        res = self.post(uri, data)
         if res == None:
             return None
         try:
-	    for reg in res['regions']:
-		if reg['region_id'] == regionid:
-		    return reg
+            for reg in res['regions']:
+                if reg['region_id'] == regionid:
+                    return reg
             return None
         except Exception,e:
             print traceback.format_exc()
             return None
 
     def quitLeader(self, regionid):
-	return self.transferLeader(regionid, '0.0.0.0:0')
+        return self.transferLeader(regionid, '0.0.0.0:0')
 
     def transferLeader(self, regionid, newleader):
         res = None
-	uri = 'StoreService/region_raft_control'
-	data = '{"op_type" : "TransLeader","region_id" : %d,"new_leader" : "%s"}' % (regionid, newleader)
-	res = self.post(uri, data)
-	if res == None:
-	    return None
-	try:
+        uri = 'StoreService/region_raft_control'
+        data = '{"op_type" : "TransLeader","region_id" : %d,"new_leader" : "%s"}' % (regionid, newleader)
+        res = self.post(uri, data)
+        if res == None:
+            return None
+        try:
             return res['errcode'] == 'SUCCESS'
         except Exception,e:
             print traceback.format_exc()
             return False
-	
+        
 
 
     def post(self,uri,data):
@@ -73,7 +75,7 @@ class StoreInteract():
                 req = urllib2.Request(url, data)
                 response = urllib2.urlopen(req)
                 res = response.read()
-		res = json.loads(res)
+                res = json.loads(res)
             except Exception,e:
                 time.sleep(1)
                 continue

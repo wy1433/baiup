@@ -19,7 +19,7 @@ def execSSHCommand(ip, cmdlist):
     key=paramiko.RSAKey.from_private_key_file(pkey)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip,username = 'work',pkey=key, port=58518)
+    ssh.connect(ip,username = 'work',pkey=key, port = 58518)
     stdin,stdout,stderr=ssh.exec_command(';'.join(cmdlist), get_pty=True)
     
     infomsg = stdout.read()
