@@ -99,6 +99,14 @@ class Instance():
     def getRemoteConfig(self, fileName):
         if not util.execScpLocalCommand(self.host, fileName, os.path.join(self.path, "conf", "gflags.conf")):
             exit(1)
+
+    def getRegionCount(self):
+        if self.type != 'store':
+            return 0
+        rlist = self.storeInteract.getRegionList()
+        if rlist == None:
+            return 0
+        return len(rlist)
         
 
     def start(self):

@@ -57,6 +57,8 @@ class ScaleInProcessor():
                 metaClient = MetaClient(','.join(metaList))
                 status = metaClient.getInstanceStatus(key)
                 if status == 'NORMAL':
+                    #先transfer leader
+                    instance.transferAllLeader()
                     #从meta set instance migrate
                     ret = metaClient.setInstanceMigrate(key)
                     if not ret :
@@ -69,7 +71,7 @@ class ScaleInProcessor():
                     cnt = metaClient.getInstanceRegionCount(key)
                     if cnt != 0:
                         droped = False
-                        print "instance %s is migrating!" % key
+                        print "instance %s is migrating! region count %d" % (key, cnt)
                         break
                 else:
                     print "instance %s status is %s, please check!" % (key, status)
