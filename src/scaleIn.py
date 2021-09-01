@@ -73,6 +73,12 @@ class ScaleInProcessor():
                         droped = False
                         print "instance %s is migrating! region count %d" % (key, cnt)
                         break
+                    else:
+                        droped = True
+                        metaClient.dropInstance(key)
+                elif status == 'NOINS':
+                    pass
+                    droped = True
                 else:
                     print "instance %s status is %s, please check!" % (key, status)
                     exit(1)

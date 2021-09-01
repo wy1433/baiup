@@ -135,6 +135,8 @@ class Instance():
         return util.getAliveTime(self.host, self.port, self.type)
 
     def transferAllLeader(self):
+        if not self.check():
+            return
         print "transfer leader", self.node
         regionList = self.storeInteract.getRegionList()
         if regionList == None:

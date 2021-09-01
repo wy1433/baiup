@@ -49,19 +49,27 @@ class DisplayProcessor():
                     continue
                 checkRet = instance.check()
                 if checkRet :
+                    cnt = 0
                     nodeStatus = 'UP'
                     if instance.type == 'store':
                         status = metaClient.getInstanceStatus(instance.node)
+                        cnt = metaClient.getInstanceRegionCount(instance.node)
                         nodeStatus = status
                         if status == 'MIGRATE':
-                            cnt = metaClient.getInstanceRegionCount(instance.node)
                             if cnt == 0:
                                 nodeStatus = 'TOMBSTONE'
                     if nodeStatus not in ('UP','NORMAL'):
-                        print "%s\t%s\t\t\t\033[5;35m %s \033[0m!" % (key, mod, nodeStatus)
+                        if instance.type == 'store':
+                            print "%s\t%s\t\t\t\033[5;35m %s \033[0m\t%d!" % (key, mod, nodeStatus, cnt)
+                        else:
+                            print "%s\t%s\t\t\t\033[5;35m %s \033[0m\t!" % (key, mod, nodeStatus)
+                       
                     else:
                         aliveTime = instance.getAliveTime()
-                        print "%s\t%s\t\t%s\t\033[1;32m %s \033[0m!" % (key, mod, aliveTime, nodeStatus)
+                        if instance.type == 'store':
+                            print "%s\t%s\t\t%s\t\033[1;32m %s \033[0m!\t%d" % (key, mod, aliveTime, nodeStatus, cnt)
+                        else:
+                            print "%s\t%s\t\t%s\t\033[1;32m %s \033[0m!" % (key, mod, aliveTime, nodeStatus)
                 else:
                     print "%s\t%s\t\t\t\033[5;31m DOWN \033[0m!" % (key,mod)
 

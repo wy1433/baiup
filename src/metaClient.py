@@ -45,6 +45,8 @@ class MetaClient:
         res, errMsg = self.post('/MetaService/query', instanceStatusQuery)
         try:
             jsres = json.loads(res)
+            if 'instance_infos' not in jsres:
+                return "NOINS"
             for ins in jsres['instance_infos']:
                 if ins['address'] == instance:
                     return ins['status']
@@ -80,6 +82,16 @@ class MetaClient:
 
     def setInstanceMigrate(self, instance):
         setMigrateQuery = '{"op_type": "OP_SET_INSTANCE_MIGRATE","instance": {"address" : "%s"}}' % instance
+        res, errMsg = self.post('/MetaService/meta_manager', setMigrateQuery)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == 'SUCCESS'
+        except Exception,e:
+            return False
+        return False
+        
+    def dropInstance(self, instance):
+        setMigrateQuery = '{"op_type": "OP_DROP_INSTANCE","instance": {"address" : "%s"}}' % instance
         res, errMsg = self.post('/MetaService/meta_manager', setMigrateQuery)
         try:
             jsres = json.loads(res)
