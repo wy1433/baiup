@@ -11,7 +11,7 @@ import shutil
 
 import util
 import operator
-from common import CLUSTER_DIR
+from common import *
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
@@ -82,8 +82,8 @@ class ScaleOutProcessor():
         moduleList = ["meta","db","store"]
 
         self.mergeScaleOut2DeployConfig()
-        configDir = os.path.join("storage/oplist", self.uuid, "config")
-        scriptDir = os.path.join("storage/oplist", self.uuid, "script")
+        configDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "config")
+        scriptDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "script")
 
         oldConfigDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
 

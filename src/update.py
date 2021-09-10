@@ -12,6 +12,7 @@ import shutil
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
+from common import *
 
 
 class UpdateProcessor():
@@ -62,7 +63,7 @@ class UpdateProcessor():
 
 
     def updateConfig(self):
-        configDir = os.path.join("./storage/oplist", self.uuid, "config")
+        configDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "config")
         ServerConfig.initServerConfig(self.deployConfig, configDir)
         moduleList = ['meta','store','db']
         if self.module != '':
@@ -73,19 +74,19 @@ class UpdateProcessor():
                     continue
                 configFile = os.path.join(configDir, "%s.conf" % instance.node)
                 instance.updateRemoteConfig(configFile)
-                instance.start()
+                instance.restart()
                 time.sleep(2)
                 if not instance.check():
                     print "start %s faild!" % instance.node
                     exit(1)
                 else:
                     print "start %s succ!" % instance.node
-                oldConfigFile = os.path.join("storage/clusters", self.clusterName, "cache-conf", "%s.conf" % instance.node)
+                oldConfigFile = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf", "%s.conf" % instance.node)
                 shutil.copy(configFile, oldConfigFile)
 
                 
     def updateScript(self):
-        scriptDir = os.path.join("./storage/oplist", self.uuid, "script")
+        scriptDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "script")
         moduleList = ['meta','store','db']
         if self.module != '':
             moduleList = [self.module]

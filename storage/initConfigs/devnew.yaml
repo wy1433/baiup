@@ -2,8 +2,7 @@ global:
   user: work
   ssh_port: 58518
   root_dir: /home/work/BaikalDB
-  version: v2.0.0.3
-
+  version: v2.0.1.1
 meta:
   - host: 10.100.217.149
     port: 8010
@@ -11,9 +10,6 @@ meta:
     port: 8010
   - host: 10.100.217.151
     port: 8010
- 
-
-
 db:
   - host: 10.100.217.149
     port: 28282
@@ -25,14 +21,3 @@ db:
     port: 28282
   - host: 10.100.217.154
     port: 28282
-store:
-  - host: 10.100.217.149
-    port: 8110
-  - host: 10.100.217.150
-    port: 8110
-  - host: 10.100.217.151
-    port: 8110
-  - host: 10.100.217.152
-    port: 8110
-  - host: 10.100.217.154
-    port: 8110

@@ -9,6 +9,7 @@ import paramiko
 import subprocess
 import util
 import shutil
+from common import *
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
@@ -53,8 +54,8 @@ class UpgradeProcessor():
         self.deployConfig['global']['version'] = self.version
 
         moduleList = ["meta","db","store"]
-        localConfigDir = os.path.join("storage/oplist", self.uuid, "config")
-        localDeployDir = os.path.join("storage/oplist", self.uuid, "deploy")
+        localConfigDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "config")
+        localDeployDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "deploy")
         ServerConfig.initServerConfig(self.deployConfig, localConfigDir)
 
         if self.module != '':

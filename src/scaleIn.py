@@ -111,7 +111,7 @@ class ScaleInProcessor():
             self.updateConfig()
 
     def updateConfig(self):
-        configDir = os.path.join("./storage/oplist", self.uuid, "config")
+        configDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, "config")
         oldConfigDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
         ServerConfig.initServerConfig(self.deployConfig, configDir)
         for instance in Instance.getInstanceListByDeployConfig(self.deployConfig):

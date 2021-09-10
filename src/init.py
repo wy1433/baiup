@@ -80,7 +80,7 @@ class InitProcessor():
 
     def checkServerConfig(self):
         self.uuid = util.getNowStr()
-        newConfigDir = os.path.join('storage', self.uuid, 'config')
+        newConfigDir = os.path.join(LOCAL_CACHE_DIR, self.uuid, 'config')
         ServerConfig.initServerConfig(self.deployConfig, newConfigDir)
         for instance in Instance.getInstanceListByDeployConfig(self.deployConfig):
             key = instance.node
