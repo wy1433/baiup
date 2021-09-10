@@ -3,6 +3,10 @@
 
 import os
 import sys
+CURRENT_PATH = os.getcwd()
+filepath,filename=os.path.split(os.path.abspath(sys.argv[0]))
+srcpath=os.path.join(filepath,"../src")
+sys.path.append(srcpath)
 import yaml
 import paramiko
 import subprocess
@@ -16,6 +20,7 @@ from editConfig import EditConfigProcessor
 from scaleIn import ScaleInProcessor
 from scaleOut import ScaleOutProcessor
 from init import InitProcessor
+from cluster import ClusterProcessor
     
 
 def mainExecCommand():
@@ -42,6 +47,8 @@ def mainExecCommand():
         processor = EditConfigProcessor()
     elif cmd == 'init':
         processor = InitProcessor()
+    elif cmd == 'cluster':
+        processor = ClusterProcessor()
     processor.process()
 
 

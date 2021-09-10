@@ -3,6 +3,10 @@
 
 import os
 import sys
+CURRENT_PATH = os.getcwd()
+filepath,filename=os.path.split(os.path.abspath(sys.argv[0]))
+srcpath=os.path.join(filepath,"../src")
+sys.path.append(srcpath)
 import yaml
 import paramiko
 import subprocess
