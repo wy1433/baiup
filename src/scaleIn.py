@@ -52,6 +52,9 @@ class ScaleInProcessor():
                  continue
             haveScaleIn = True
             scaleInType = instance.type
+            confirm = raw_input("确定要下线 %s 节点 [%s] 吗？(y/n):" % (scaleInType, key))
+            if confirm.strip().lower() != 'y':
+                exit(0)
 
             if scaleInType == 'store':
                 metaClient = MetaClient(','.join(metaList))
