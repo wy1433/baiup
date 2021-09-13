@@ -52,14 +52,14 @@ class ScaleInProcessor():
                  continue
             haveScaleIn = True
             scaleInType = instance.type
-            confirm = raw_input("确定要下线 %s 节点 [%s] 吗？(y/n):" % (scaleInType, key))
-            if confirm.strip().lower() != 'y':
-                exit(0)
 
             if scaleInType == 'store':
                 metaClient = MetaClient(','.join(metaList))
                 status = metaClient.getInstanceStatus(key)
                 if status == 'NORMAL':
+                    confirm = raw_input("确定要下线\033[1;31m %s \033[0m 节点\033[1;32m %s \033[0m 吗？(y/n):" % (scaleInType, key))
+                    if confirm.strip().lower() != 'y':
+                        exit(0)
                     #先transfer leader
                     instance.transferAllLeader()
                     #从meta set instance migrate
@@ -87,6 +87,10 @@ class ScaleInProcessor():
                     exit(1)
                 
 
+            if scaleInType != 'store':
+                confirm = raw_input("确定要下线\033[1;31m %s \033[0m 节点\033[1;32m %s \033[0m 吗？(y/n):" % (scaleInType, key))
+                if confirm.strip().lower() != 'y':
+                    exit(0)
             instance.stop()
             time.sleep(2)
             if instance.check():
