@@ -100,7 +100,6 @@ class EditConfigProcessor():
                 if not operator.eq(oldConfig, newConfig):
                     print "new config:",newConfigFile
                     print "old config:",oldConfigFile
-		    continue
                     ins.updateRemoteConfig(newConfigFile)
                     ins.restart()
                     time.sleep(2)

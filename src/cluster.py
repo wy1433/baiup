@@ -20,11 +20,11 @@ class ClusterProcessor():
         if len(sys.argv) < 2:
             self.usage()
             exit(0)
-	clusterDir = CLUSTER_DIR
-	print "clustername\t\tversion\t\t\tmeta"
-	for cluster in os.listdir(clusterDir):
-	    deployConfig = DeployConfig.loadClusterDeployConfig(cluster)
-	    metaList = DeployConfig.getMetaList(deployConfig)
-	    version = deployConfig['global']['version']
-	    wor = cluster + '\t\t\t' + version + '\t\t' + ','.join(metaList)
-	    print wor
+        clusterDir = CLUSTER_DIR
+        print "clustername\t\tversion\t\t\tmeta"
+        for cluster in os.listdir(clusterDir):
+            deployConfig = DeployConfig.loadClusterDeployConfig(cluster)
+            metaList = DeployConfig.getMetaList(deployConfig)
+            version = deployConfig['global']['version']
+            wor = cluster + '\t\t\t' + version + '\t\t' + ','.join(metaList)
+            print wor
