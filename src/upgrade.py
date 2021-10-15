@@ -17,7 +17,7 @@ from instance import Instance
 
 class UpgradeProcessor():
     def __init__(self):
-        self.pkgPath = "./repo"
+        self.pkgPath = REPO_DIR
         pass
 
     def usage(self):

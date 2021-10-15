@@ -38,6 +38,7 @@ class Instance():
         stopTplPath = os.path.join(tplDir, self.type, "stop.sh")
         stopData = open(stopTplPath).read().replace('__REP_PATH__REP__', self.subPath)
         runData = open(os.path.join(tplDir, self.type, "run")).read()
+
         
         nodeRestartFile = os.path.join(dirName, "restart_%s.sh" % self.node)
         open(nodeRestartFile ,'w').write(restartData)
@@ -49,9 +50,19 @@ class Instance():
         open(nodeRunFile, 'w').write(runData)
         os.chmod(nodeRunFile, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
 
+        if self.type == 'db':
+            nodeDummyPortFile = os.path.join(dirName, 'dummy_server_%s.port' % self.node)
+            port = self.port
+            dummy_port = 8888 + self.port - 28282
+            dummyPortData = str(dummy_port)
+            open(nodeDummyPortFile, 'w').write(dummyPortData)
+            os.chmod(nodeDummyPortFile, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
+
 
     def updateRemoteScript(self, scriptDir, scriptName = None):
         scriptList = ['restart_by_supervise.sh','stop.sh','run']
+        if self.type == 'db':
+            scriptList = ['restart_by_supervise.sh','stop.sh','run','dummy_server.port']
         if scriptName != None and scriptName in scriptList:
             scriptList = [scriptName]
 
@@ -66,8 +77,10 @@ class Instance():
                 localFileName = 'run_%s.sh' % self.node
             elif scriptName == 'stop.sh':
                 localFileName = 'stop_%s.sh' % self.node
-            else:
+            elif scriptName == 'restart_by_supervise.sh':
                 localFileName = 'restart_%s.sh' % self.node
+            else:
+                localFileName = 'dummy_server_%s.port' % self.node
             
             localScriptPath = os.path.join(scriptDir, localFileName)
             if not util.execScpRemoteCommand(self.host, localScriptPath, os.path.join(remoteDir, scriptName)):

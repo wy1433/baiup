@@ -84,6 +84,7 @@ class DeployProcessor():
             instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, module)
             scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
             for instance in instanceList:
+                print instance.node, "init"
                 instance.makeRemoteDir()
 
                 instance.updateRemoteBin()
@@ -92,6 +93,7 @@ class DeployProcessor():
                 instance.updateRemoteScript(scriptDir)
 
 
+            continue
             for instance in instanceList:
                 instance.start()
                 time.sleep(2)
