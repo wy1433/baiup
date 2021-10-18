@@ -63,6 +63,21 @@ class StoreInteract():
             return False
         
 
+    def getIllegalRegion(self):
+	res = None
+	uri = 'StoreService/query_illegal_region'
+	data = '{}'
+        res = self.post(uri, data)
+        if res == None:
+            return None
+        try:
+            if 'region_leaders' not in res:
+                return []
+            return res['region_leaders']
+        except Exception,e:
+            print traceback.format_exc()
+            return []
+
 
     def post(self,uri,data):
         res = None
@@ -84,6 +99,7 @@ class StoreInteract():
             print traceback.format_exc()
             return res
         return res
+
 
 
 if __name__ == '__main__':

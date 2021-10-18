@@ -21,6 +21,7 @@ from scaleIn import ScaleInProcessor
 from scaleOut import ScaleOutProcessor
 from init import InitProcessor
 from cluster import ClusterProcessor
+from storeQuery import StoreQueryProcessor
     
 
 def mainExecCommand():
@@ -49,6 +50,8 @@ def mainExecCommand():
         processor = InitProcessor()
     elif cmd == 'cluster':
         processor = ClusterProcessor()
+    elif cmd == 'store-query':
+	processor = StoreQueryProcessor()
     processor.process()
 
 
