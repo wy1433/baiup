@@ -46,6 +46,21 @@ class StoreInteract():
             print traceback.format_exc()
             return None
 
+    def getRaftInfo(self, regionid):
+	res = None
+	uri = 'raft_stat/region_%d' % regionid
+	data = ''
+	res = self.get(uri)
+	return res
+
+    def getRaftList(self):
+	res = None
+	uri = 'raft_stat'
+	data = ''
+	res = self.get(uri)
+	reslist = res.split('\n\n')
+	return reslist
+
     def quitLeader(self, regionid):
         return self.transferLeader(regionid, '0.0.0.0:0')
 
@@ -89,6 +104,24 @@ class StoreInteract():
 	except Exception, e:
 	    return False
 
+    def removePeer(self, regionID, peer):
+	
+	pass
+
+    def setPeers(self, regionID, oldpeers, newpeers):
+	uri = 'StoreService/region_raft_control'
+	data = {'op_type':'SetPeer', 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
+	data = json.dumps(data,ensure_ascii=False)
+	res = self.post(uri, data)
+	if res == None:
+	    return False
+	try:
+	    if res['errcode'] != 'SUCCESS':
+	       print res
+	    return res['errcode'] == 'SUCCESS'
+	except Exception, e:
+	    return False
+
 
     def post(self,uri,data):
         res = None
@@ -110,6 +143,25 @@ class StoreInteract():
             print traceback.format_exc()
             return res
         return res
+
+    def get(self, uri):
+	tryTimes = 3
+	while tryTimes:
+            tryTimes -= 1
+            try:
+		headers = {'User-Agent':'curl/7.29.0'}
+                url = 'http://%s:%d/%s' % (self.host, self.port, uri)
+                req = urllib2.Request(url, headers = headers, data = '{}')
+                response = urllib2.urlopen(req)
+                res = response.read()
+		res = res.replace('\r\n','\n').strip()
+		return res
+            except Exception,e:
+                time.sleep(1)
+                print traceback.format_exc()
+                continue
+            break
+	return None
 
 
 

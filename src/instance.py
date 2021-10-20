@@ -183,15 +183,43 @@ class Instance():
 	if self.type != 'store':
 	    return None
 	return self.storeInteract.getIllegalRegion()
+    def getRegionList(self):
+	if self.type != 'store':
+	    return None
+	return self.storeInteract.getRegionList()
+    def getRegionInfo(self, regionID):
+	if self.type != 'store':
+	    return {}
+	return self.storeInteract.getRegionInfo(regionID)
+
+    def getRaftInfo(self, regionID):
+	if self.type != 'store':
+	    return None
+	return self.storeInteract.getRaftInfo(regionID)
+
+    def getRaftList(self):
+	if self.type != 'store':
+	    return None
+	return self.storeInteract.getRaftList()
 
     def removeRegion(self, regionID):
 	if self.type != 'store':
 	    return 
 	return self.storeInteract.removeRegion(regionID)
 
+    def removePeer(self, regionID, peer):
+	if self.type != 'store':
+	    return
+	return self.storeInteract.removePeer(regionID, peer)
+
+    def setPeers(self, regionID, oldpeers, newpeers):
+	if self.type != 'store':
+	    return
+	return self.storeInteract.setPeers(regionID, oldpeers, newpeers)
+
 
     @staticmethod
-    def getInstanceListByDeployConfig(deployConfig, module = None):
+    def getInstanceListByDeployConfig(deployConfig, module = None, node = None):
         res = []
         rootDir = deployConfig['global']['root_dir']
         clusterName = deployConfig['global']['cluster']
@@ -210,6 +238,8 @@ class Instance():
                 instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path))
                 if 'config' in ins:
                     instance.config = ins['config']
+		if instance.node == node:
+		    return instance
                 res.append(instance)
         return res
 
