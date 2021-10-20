@@ -17,7 +17,7 @@ class RegionProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "baiup region cluster illegal|remove-illegal|count|diff|applying"
+        print "baiup region cluster illegal|remove-illegal|count|diff|applying|peer-count"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -57,6 +57,8 @@ class RegionProcessor():
 	    self.addPeer()
 	elif self.cmd == 'applying':
 	    self.showApplyingCount()
+	elif self.cmd == 'peer-count':
+	    self.showPeerCount()
 	else:
 	    self.usage()
 	    exit(0)
@@ -239,6 +241,18 @@ class RegionProcessor():
 		    peers = self.regionDict[rid]['peers']
 		    peers = ','.join(peers)
 	    	print instance.node + '\t' + str(reg['region_id']) + '\t' + peers
+
+    def showPeerCount(self):
+	self.node = ''
+	if (sys.argv) == 5:
+	    self.node = sys.argv[4]
+	regionList = self.metaClient.getRegionInfo()
+	for reg in regionList:
+	    peerCnt = len(reg['peers'])
+	    rid = reg['region_id']
+	    leader = reg['leader']
+	    print "region_id:%d\tpeerCount:%d\tleader:%s\tpeers:%s" % (rid, peerCnt, leader, json.dumps(reg['peers']))
+
 
     def removeIllegalRegion(self):
 	self.node = ''
