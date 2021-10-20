@@ -78,6 +78,17 @@ class StoreInteract():
             print traceback.format_exc()
             return []
 
+    def removeRegion(self, regionID):
+	uri = 'StoreService/remove_region'
+	data = '{"region_id":%d, "force": true}' % regionID
+	res = self.post(uri, data)
+	if res == None:
+	    return False
+	try:
+	    return res['errcode'] == 'SUCCESS'
+	except Exception, e:
+	    return False
+
 
     def post(self,uri,data):
         res = None

@@ -181,8 +181,13 @@ class Instance():
 
     def getIllegalRegion(self):
 	if self.type != 'store':
-	     return None
+	    return None
 	return self.storeInteract.getIllegalRegion()
+
+    def removeRegion(self, regionID):
+	if self.type != 'store':
+	    return 
+	return self.storeInteract.removeRegion(regionID)
 
 
     @staticmethod
