@@ -17,7 +17,7 @@ class RegionProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "baiup region cluster illegal|remove-illegal|count|diff"
+        print "baiup region cluster illegal|remove-illegal|count|diff|applying"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -55,6 +55,8 @@ class RegionProcessor():
 	    self.removePeer()
 	elif self.cmd == 'add-peer':
 	    self.addPeer()
+	elif self.cmd == 'applying':
+	    self.showApplyingCount()
 	else:
 	    self.usage()
 	    exit(0)
@@ -112,10 +114,27 @@ class RegionProcessor():
 	    print "has not node :%s" % self.node
 	    return
 	print instance.getRaftInfo(region_id)
+
+    def showApplyingCount(self):
+	self.node = ''
+	if len(sys.argv) == 5:
+	    self.node = sys.argv[4]
+	instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
+	for instance in instanceList:
+	    if self.node != '' and self.node != instance.node:
+		continue
+	    raftList = instance.getRaftList()
+	    count = 0
+	    for raft in raftList:
+	        if raft.find("state_machine: Applying") != -1:
+		    count += 1
+	    print instance.node, count
+	    
 	
     def showRaftList(self):
 	if len(sys.argv) != 5:
 	    print "usage: baiup region cluster raftlist storeid"
+	    return
 	self.node = sys.argv[4]
 	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
 	if instance == None:
