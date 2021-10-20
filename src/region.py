@@ -92,6 +92,9 @@ class RegionProcessor():
 	    instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
 	else:
 	    instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
+	    if instance == None:
+		print "has not node :%s" % self.node
+	        return
 	    instanceList.append(instance)
 	for instance in instanceList:
 	    pass
@@ -100,10 +103,14 @@ class RegionProcessor():
     def showRaftInfo(self):
 	if len(sys.argv) < 6:
 	    print "usage: baiup region cluster raftinfo storeid region_id"
+	    return
 	self.node = sys.argv[4]
 	region_id = int(sys.argv[5])
 	
 	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
+	if instance == None:
+	    print "has not node :%s" % self.node
+	    return
 	print instance.getRaftInfo(region_id)
 	
     def showRaftList(self):
@@ -111,6 +118,9 @@ class RegionProcessor():
 	    print "usage: baiup region cluster raftlist storeid"
 	self.node = sys.argv[4]
 	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
+	if instance == None:
+	    print "has not node :%s" % self.node
+	    return
 	raftList = instance.getRaftList()
 	for raftInfo in raftList:
 	    if raftInfo.strip() == '':
@@ -133,6 +143,9 @@ class RegionProcessor():
 	else:
 	    if True:
 		instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
+	        if instance == None:
+		    print "has not node :%s" % self.node
+		    return
 		regionList = instance.getRegionList()
 		for reg in regionList:
 		    print reg['region_id'], reg['leader']
@@ -258,6 +271,9 @@ class RegionProcessor():
 
 	leader = regionInfo['leader']
 	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = leader)
+	if instance == None:
+	    print "has not store %s" % leader
+	    return
 	if leader == peerid:
 	    instane.transferLeader(regionID)
 	    leader = instance.getLeader(regionID)
@@ -296,6 +312,9 @@ class RegionProcessor():
 
 	leader = regionInfo['leader']
 	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = leader)
+	if instance == None:
+	    print "has not store %s" % leader
+	    return
 	oldpeerslist = regionInfo['peers']
 	newpeerslist = []
 	for peer in oldpeerslist:

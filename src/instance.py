@@ -241,5 +241,7 @@ class Instance():
 		if instance.node == node:
 		    return instance
                 res.append(instance)
+	if node != None:
+	    return None
         return res
 
