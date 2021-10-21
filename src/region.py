@@ -208,6 +208,9 @@ class RegionProcessor():
 	for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, 'store'):
 	    if self.node != '' and self.node != instance.node:
 		continue
+	    if instance == None or instance.check() == False:
+		print "%s store is down!" % instance.node
+		continue
 
 	    regionList = instance.getRegionList()
 	    for region in regionList:
@@ -303,20 +306,53 @@ class RegionProcessor():
 	    return
 
 	leader = regionInfo['leader']
-	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = leader)
-	if instance == None:
-	    print "has not store %s" % leader
-	    return
-	if leader == peerid:
-	    instane.transferLeader(regionID)
-	    leader = instance.getLeader(regionID)
-	    
 	oldpeerslist = regionInfo['peers']
 	newpeerslist = []
 	for peer in oldpeerslist:
-	    if peer == peerid:
+	    if peer != peerid:
+		newpeerslist.append(peer)
+	if len(newpeerslist) == len(oldpeerslist):
+	    print "has no peer to remove"
+	    return
+	#从store获取leader
+	for peer in newpeerslist: 
+	    instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = peer)
+	    if instance == None or instance.check() == False:
+		print "peer %s not exist or dead!" % peer
 		continue
-	    newpeerslist.append(peer)
+	    storeRegionInfo = instance.getRegionInfo(region_id)
+	    if storeRegionInfo == None:
+		print "store get region info faild! store:%s" % peer
+		continue
+	    res = instance.forceSetPeers(region_id, oldpeerslist, newpeerslist)
+	    if res:
+		print "store %s region %d remove peer %s success!" % (peer, region_id, peerid)
+	    else:
+		print "remove peer faild! region :%d, store: %s, remove-peer: %s" % (region_id, peer, peerid)
+	return
+
+	if leader == '0.0.0.0:0:0':
+	    #没有主节点，需要force set peer
+	    for peer in newpeerslist:
+		instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = peer)
+		if instance == None or instance.check() == False:
+		    print "peer % not exist or dead!" % peer
+		    continue
+		res = instance.forceSetPeers(region_id, oldpeerslist, newpeerslist)
+		if res :
+		    print "store %s region %d remove peer %s success!" % (peer, region_id, peerid)
+		else:
+		    print "remove peer faild! region :%d, store: %s, remove-peer: %s" % (region_id, peer, peerid)
+	    return
+		
+	instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = leader)
+	if instance == None or not instance.check():
+	    print "has no leader %s or store down" % leader
+	    return
+	if leader == peerid:
+	    instane.transferLeader(regionID)
+	leader = instance.getLeader(regionID)
+	    
 	res = instance.setPeers(region_id, oldpeerslist, newpeerslist)
 	if res:
 	    print "region %d remove peer %s success!" % (region_id, peerid)

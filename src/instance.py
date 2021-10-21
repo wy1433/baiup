@@ -217,6 +217,11 @@ class Instance():
 	    return
 	return self.storeInteract.setPeers(regionID, oldpeers, newpeers)
 
+    def forceSetPeers(self, regionID, oldpeers, newpeers):
+	if self.type != 'store':
+	    return
+	return self.storeInteract.forceSetPeers(regionID, oldpeers, newpeers)
+
 
     @staticmethod
     def getInstanceListByDeployConfig(deployConfig, module = None, node = None):

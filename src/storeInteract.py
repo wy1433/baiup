@@ -122,6 +122,20 @@ class StoreInteract():
 	except Exception, e:
 	    return False
 
+    def forceSetPeers(self, regionID, oldpeers, newpeers):
+	uri = 'StoreService/region_raft_control'
+	data = {'op_type':'SetPeer','force':True, 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
+	data = json.dumps(data,ensure_ascii=False)
+	res = self.post(uri, data)
+	if res == None:
+	    return False
+	try:
+	    if res['errcode'] != 'SUCCESS':
+	       print res
+	    return res['errcode'] == 'SUCCESS'
+	except Exception, e:
+	    return False
+
 
     def post(self,uri,data):
         res = None
