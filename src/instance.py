@@ -100,8 +100,8 @@ class Instance():
 
     def updateRemoteBin(self):
         localbin = os.path.join(REPO_DIR, self.version, "bin", BIN_NAME_DICT[self.type])
-	cmd = "rm -f %s" % os.path.join(self.path, "bin", BIN_NAME_DICT[self.type] + ".tmp")
-	util.execSSHCommand(self.host, cmd)
+        cmd = "rm -f %s" % os.path.join(self.path, "bin", BIN_NAME_DICT[self.type] + ".tmp")
+        util.execSSHCommand(self.host, cmd)
         if not util.execScpRemoteCommand(self.host, localbin, os.path.join(self.path, "bin", BIN_NAME_DICT[self.type] + ".tmp")):
             exit(1)
         cmd = "cd %s && cp -f bin/%s.tmp bin/%s" % (self.path, BIN_NAME_DICT[self.type], BIN_NAME_DICT[self.type])
@@ -180,47 +180,47 @@ class Instance():
         return util.checkNode(self.host, self.port)
 
     def getIllegalRegion(self):
-	if self.type != 'store':
-	    return None
-	return self.storeInteract.getIllegalRegion()
+        if self.type != 'store':
+            return None
+        return self.storeInteract.getIllegalRegion()
     def getRegionList(self):
-	if self.type != 'store':
-	    return None
-	return self.storeInteract.getRegionList()
+        if self.type != 'store':
+            return None
+        return self.storeInteract.getRegionList()
     def getRegionInfo(self, regionID):
-	if self.type != 'store':
-	    return {}
-	return self.storeInteract.getRegionInfo(regionID)
+        if self.type != 'store':
+            return {}
+        return self.storeInteract.getRegionInfo(regionID)
 
     def getRaftInfo(self, regionID):
-	if self.type != 'store':
-	    return None
-	return self.storeInteract.getRaftInfo(regionID)
+        if self.type != 'store':
+            return None
+        return self.storeInteract.getRaftInfo(regionID)
 
     def getRaftList(self):
-	if self.type != 'store':
-	    return None
-	return self.storeInteract.getRaftList()
+        if self.type != 'store':
+            return None
+        return self.storeInteract.getRaftList()
 
     def removeRegion(self, regionID):
-	if self.type != 'store':
-	    return 
-	return self.storeInteract.removeRegion(regionID)
+        if self.type != 'store':
+            return 
+        return self.storeInteract.removeRegion(regionID)
 
     def removePeer(self, regionID, peer):
-	if self.type != 'store':
-	    return
-	return self.storeInteract.removePeer(regionID, peer)
+        if self.type != 'store':
+            return
+        return self.storeInteract.removePeer(regionID, peer)
 
     def setPeers(self, regionID, oldpeers, newpeers):
-	if self.type != 'store':
-	    return
-	return self.storeInteract.setPeers(regionID, oldpeers, newpeers)
+        if self.type != 'store':
+            return
+        return self.storeInteract.setPeers(regionID, oldpeers, newpeers)
 
     def forceSetPeers(self, regionID, oldpeers, newpeers):
-	if self.type != 'store':
-	    return
-	return self.storeInteract.forceSetPeers(regionID, oldpeers, newpeers)
+        if self.type != 'store':
+            return
+        return self.storeInteract.forceSetPeers(regionID, oldpeers, newpeers)
 
 
     @staticmethod
@@ -243,10 +243,10 @@ class Instance():
                 instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path))
                 if 'config' in ins:
                     instance.config = ins['config']
-		if instance.node == node:
-		    return instance
+                if instance.node == node:
+                    return instance
                 res.append(instance)
-	if node != None:
-	    return None
+        if node != None:
+            return None
         return res
 

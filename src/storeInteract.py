@@ -47,19 +47,19 @@ class StoreInteract():
             return None
 
     def getRaftInfo(self, regionid):
-	res = None
-	uri = 'raft_stat/region_%d' % regionid
-	data = ''
-	res = self.get(uri)
-	return res
+        res = None
+        uri = 'raft_stat/region_%d' % regionid
+        data = ''
+        res = self.get(uri)
+        return res
 
     def getRaftList(self):
-	res = None
-	uri = 'raft_stat'
-	data = ''
-	res = self.get(uri)
-	reslist = res.split('\n\n')
-	return reslist
+        res = None
+        uri = 'raft_stat'
+        data = ''
+        res = self.get(uri)
+        reslist = res.split('\n\n')
+        return reslist
 
     def quitLeader(self, regionid):
         return self.transferLeader(regionid, '0.0.0.0:0')
@@ -79,9 +79,9 @@ class StoreInteract():
         
 
     def getIllegalRegion(self):
-	res = None
-	uri = 'StoreService/query_illegal_region'
-	data = '{}'
+        res = None
+        uri = 'StoreService/query_illegal_region'
+        data = '{}'
         res = self.post(uri, data)
         if res == None:
             return None
@@ -94,47 +94,47 @@ class StoreInteract():
             return []
 
     def removeRegion(self, regionID):
-	uri = 'StoreService/remove_region'
-	data = '{"region_id":%d, "force": true}' % regionID
-	res = self.post(uri, data)
-	if res == None:
-	    return False
-	try:
-	    return res['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    return False
+        uri = 'StoreService/remove_region'
+        data = '{"region_id":%d, "force": true}' % regionID
+        res = self.post(uri, data)
+        if res == None:
+            return False
+        try:
+            return res['errcode'] == 'SUCCESS'
+        except Exception, e:
+            return False
 
     def removePeer(self, regionID, peer):
-	
-	pass
+        
+        pass
 
     def setPeers(self, regionID, oldpeers, newpeers):
-	uri = 'StoreService/region_raft_control'
-	data = {'op_type':'SetPeer', 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
-	data = json.dumps(data,ensure_ascii=False)
-	res = self.post(uri, data)
-	if res == None:
-	    return False
-	try:
-	    if res['errcode'] != 'SUCCESS':
-	       print res
-	    return res['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    return False
+        uri = 'StoreService/region_raft_control'
+        data = {'op_type':'SetPeer', 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
+        data = json.dumps(data,ensure_ascii=False)
+        res = self.post(uri, data)
+        if res == None:
+            return False
+        try:
+            if res['errcode'] != 'SUCCESS':
+               print res
+            return res['errcode'] == 'SUCCESS'
+        except Exception, e:
+            return False
 
     def forceSetPeers(self, regionID, oldpeers, newpeers):
-	uri = 'StoreService/region_raft_control'
-	data = {'op_type':'SetPeer','force':True, 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
-	data = json.dumps(data,ensure_ascii=False)
-	res = self.post(uri, data)
-	if res == None:
-	    return False
-	try:
-	    if res['errcode'] != 'SUCCESS':
-	       print res
-	    return res['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    return False
+        uri = 'StoreService/region_raft_control'
+        data = {'op_type':'SetPeer','force':True, 'region_id':regionID,'old_peers':oldpeers,'new_peers':newpeers}
+        data = json.dumps(data,ensure_ascii=False)
+        res = self.post(uri, data)
+        if res == None:
+            return False
+        try:
+            if res['errcode'] != 'SUCCESS':
+               print res
+            return res['errcode'] == 'SUCCESS'
+        except Exception, e:
+            return False
 
 
     def post(self,uri,data):
@@ -159,23 +159,23 @@ class StoreInteract():
         return res
 
     def get(self, uri):
-	tryTimes = 3
-	while tryTimes:
+        tryTimes = 3
+        while tryTimes:
             tryTimes -= 1
             try:
-		headers = {'User-Agent':'curl/7.29.0'}
+                headers = {'User-Agent':'curl/7.29.0'}
                 url = 'http://%s:%d/%s' % (self.host, self.port, uri)
                 req = urllib2.Request(url, headers = headers, data = '{}')
                 response = urllib2.urlopen(req)
                 res = response.read()
-		res = res.replace('\r\n','\n').strip()
-		return res
+                res = res.replace('\r\n','\n').strip()
+                return res
             except Exception,e:
                 time.sleep(1)
                 print traceback.format_exc()
                 continue
             break
-	return None
+        return None
 
 
 
