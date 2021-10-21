@@ -16,8 +16,8 @@ class MetaClient:
         self.tableSchemaQuery = '{"op_type" : "QUERY_SCHEMA"}'
         self.regionQuery = '{"op_type" : "QUERY_REGION"}'
         self.getLeaderQuery = '{"op_type" : "GetLeader","region_id":0}'
-	self.closeBalanceQuery = '{"op_type": "OP_CLOSE_LOAD_BALANCE"}'
-	self.openBalanceQuery = '{"op_type": "OP_OPEN_LOAD_BALANCE"}'
+        self.closeBalanceQuery = '{"op_type": "OP_CLOSE_LOAD_BALANCE"}'
+        self.openBalanceQuery = '{"op_type": "OP_OPEN_LOAD_BALANCE"}'
 
     def getLeader(self):
         res = None
@@ -82,13 +82,13 @@ class MetaClient:
             return []
 
     def getInstanceStatusList(self):
-	instanceList = self.getInstanceList()
-	res = {}
-	for instance in instanceList:
-	    status = self.getInstanceStatus(instance)
-	    res[instance] = status
-	return res
-	        
+        instanceList = self.getInstanceList()
+        res = {}
+        for instance in instanceList:
+            status = self.getInstanceStatus(instance)
+            res[instance] = status
+        return res
+                
 
 
     def setInstanceMigrate(self, instance):
@@ -137,22 +137,22 @@ class MetaClient:
 
                 
     def closeBalance(self):
-	res, errMsg = self.post("/MetaService/meta_manager", self.closeBalanceQuery)
-	try:
-	    jsres = json.loads(res)
-	    return jsres['errcode'] == "SUCCESS"
-	except Exception,e:
+        res, errMsg = self.post("/MetaService/meta_manager", self.closeBalanceQuery)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == "SUCCESS"
+        except Exception,e:
             print traceback.format_exc()
-	    return False
-	    
+            return False
+            
     def openBalance(self):
-	res, errMsg = self.post("/MetaService/meta_manager", self.openBalanceQuery)
-	try:
-	    jsres = json.loads(res)
-	    return jsres['errcode'] == "SUCCESS"
-	except Exception,e:
+        res, errMsg = self.post("/MetaService/meta_manager", self.openBalanceQuery)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == "SUCCESS"
+        except Exception,e:
             print traceback.format_exc()
-	    return False
+            return False
 
     def post(self,uri,data):
         res = None
