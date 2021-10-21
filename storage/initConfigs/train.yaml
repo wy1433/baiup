@@ -1,0 +1,39 @@
+db:
+- host: 172.26.1.213
+  path: db
+  port: 28282
+  config:
+    -default_logical_room: 'wx'
+    -default_physical_room: 'wx1' 
+- host: 172.26.1.214
+  path: db
+  port: 28282
+  config:
+    -default_logical_room: 'wx'
+    -default_physical_room: 'wx1'
+- host: 172.24.64.74
+  path: db
+  port: 28282
+  config:
+    -default_logical_room: 'th'
+    -default_physical_room: 'th1'
+- host: 172.30.106.192
+  path: db
+  port: 28282
+  config:
+    -default_logical_room: 'xhy'
+    -default_physical_room: 'xhy1'
+global:
+  cluster: train
+  root_dir: /home/work/BaikalDB
+  version: v2.0.1.1
+meta:
+- host: 172.24.64.74
+  path: meta
+  port: 8010
+- host: 172.26.1.213
+  path: meta
+  port: 8010
+- host: 172.26.1.214
+  path: meta1
+  port: 8011
