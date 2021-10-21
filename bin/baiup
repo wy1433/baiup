@@ -22,6 +22,7 @@ from scaleOut import ScaleOutProcessor
 from init import InitProcessor
 from cluster import ClusterProcessor
 from region import RegionProcessor
+from meta import MetaProcessor
     
 
 def mainExecCommand():
@@ -52,6 +53,11 @@ def mainExecCommand():
         processor = ClusterProcessor()
     elif cmd == 'region':
 	processor = RegionProcessor()
+    elif cmd == 'meta':
+	processor = MetaProcessor()
+    else:
+	print "usage: baiup cmd args"
+	return
     processor.process()
 
 

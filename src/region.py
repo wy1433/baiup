@@ -87,6 +87,10 @@ class RegionProcessor():
     def showDiffRegions(self):
 	self.node = ''
 	metaRegionList = self.metaClient.getRegionInfo()
+	metaRegionDict = {}
+	for reg in metaRegionList:
+	    rid = reg['region_id']
+	    metaRegionDict[rid] = reg
 	self.node = ''
 	if len(sys.argv) >= 5:
 	    self.node = sys.argv[4]
@@ -101,8 +105,17 @@ class RegionProcessor():
 	        return
 	    instanceList.append(instance)
 	for instance in instanceList:
-	    pass
-	
+	    if instance.check() == False:
+		continue
+	    regionList = instance.getRegionList()
+            for reg in regionList:
+                rid = reg['region_id']
+                metaLeader = "None"
+                leader = reg['leader']
+                if rid in metaRegionDict:
+                    metaLeader = metaRegionDict[rid]['leader']
+                if leader != metaLeader:
+                    print "%s\t%d\t%s\t%s" % (instance.node, rid, leader, metaLeader)
 	
     def showRaftInfo(self):
 	if len(sys.argv) < 6:
@@ -202,6 +215,10 @@ class RegionProcessor():
 	   self.node = sys.argv[4]
 	metaRegionList = self.metaClient.getRegionInfo()
 	metaRegionDict = {}
+	instanceStatus = self.metaClient.getInstanceStatusList()
+	for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, 'store'):
+	    if instance.check() == False:
+		instanceStatus[instance.node] = "DOWN"
 	for reg in metaRegionList:
 	    rid = reg['region_id']
 	    metaRegionDict[rid] = reg
@@ -209,16 +226,25 @@ class RegionProcessor():
 	    if self.node != '' and self.node != instance.node:
 		continue
 	    if instance == None or instance.check() == False:
-		print "%s store is down!" % instance.node
+		#print "%s store is down!" % instance.node
 		continue
 
 	    regionList = instance.getRegionList()
 	    for region in regionList:
 		if region['leader'] == '0.0.0.0:0':
 		    peers = 'None'
+		    wor = "%d\t%s\t" % (region['region_id'], instance.node)
 		    if region['region_id'] in metaRegionDict:
-			peers = ','.join(metaRegionDict[region['region_id']]['peers'])
-		    print region['region_id'], instance.node, peers
+		        peersPrint = []
+		        for peer in metaRegionDict[region['region_id']]['peers']:
+			    if peer in instanceStatus and instanceStatus[peer] == 'DOWN':
+			        a = "\033[1;31m%s\033[0m" % peer
+			    else:
+			        a = peer
+			    peersPrint.append(a)
+			peers = ','.join(peersPrint)
+		    wor += peers
+		    print wor
 
 
 
