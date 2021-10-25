@@ -17,7 +17,7 @@ class MetaProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "baiup meta cluster close-balance|open-balance"
+        print "baiup meta cluster close-balance|open-balance|logical|physical|instance"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -37,6 +37,12 @@ class MetaProcessor():
             self.closeBalance()
         elif self.cmd == 'open-balance':
             self.openBalance()
+	elif self.cmd == "logical":
+	    self.queryLogicalRoom()
+	elif self.cmd == "physical":
+	    self.queryPhysicalRoom()
+	elif self.cmd == "instance":
+	    self.queryInstance()
         else:
             self.usage()
             exit(0)
@@ -53,3 +59,20 @@ class MetaProcessor():
         else:
             print "open meta balance faild!"
 
+    def queryLogicalRoom(self):
+	logicalRoomList = self.metaClient.getLogicalRoom()
+	for logicalRoom in logicalRoomList:
+	    logicalRoomName = logicalRoom['logical_room']
+	    if 'physical_rooms' not in logicalRoom:
+		continue
+	    for physical in logicalRoom['physical_rooms']:
+		print "%s\t%s" % (logicalRoomName, physical)
+
+    def queryPhysicalRoom(self):
+	for physicalInstance in self.metaClient.getPhysicalRoom():
+	    logical_room = physicalInstance['logical_room']
+	    physical_room = physicalInstance['physical_room']
+	    if 'instances' not in physicalInstance:
+		continue
+	    for instance in physicalInstance['instances']:
+		print "%s\t%s\t%s" % (logical_room, physical_room, instance)

@@ -154,6 +154,25 @@ class MetaClient:
             print traceback.format_exc()
             return False
 
+    def getLogicalRoom(self):
+	res, errMsg = self.post("/MetaService/query",'{"op_type":"QUERY_LOGICAL"}')
+	try:
+	    jsres = json.loads(res)
+	    return jsres['physical_rooms']
+	except Exception,e:
+            print traceback.format_exc()
+            return []
+	    
+    def getPhysicalRoom(self):
+	res, errMsg = self.post("/MetaService/query",'{"op_type":"QUERY_PHYSICAL"}')
+	try:
+	    jsres = json.loads(res)
+	    return jsres["physical_instances"]
+	except Exception,e:
+            print traceback.format_exc()
+            return []
+	    
+
     def post(self,uri,data):
         res = None
         tryTimes = 3
