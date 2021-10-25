@@ -1,0 +1,15 @@
+global:
+  version: v2.0.1
+  root_dir: /home/work/BaikalDB
+meta:
+- host: 172.30.106.132
+- host: 172.24.67.114
+- host: 172.26.2.73
+
+db:
+- host: 172.30.106.132
+- host: 172.30.106.133
+- host: 172.24.67.114
+- host: 172.24.67.115
+- host: 172.26.2.73
+- host: 172.26.2.74
