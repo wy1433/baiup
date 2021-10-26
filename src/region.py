@@ -12,6 +12,7 @@ import util
 from common import CLUSTER_DIR
 from instance import Instance
 from metaClient import MetaClient
+from tabulate import tabulate
 
 class RegionProcessor():
     def __init__(self):
@@ -57,7 +58,7 @@ class RegionProcessor():
             self.addPeer()
         elif self.cmd == 'applying':
             self.showApplyingCount()
-        elif self.cmd == 'peer-count':
+        elif self.cmd.startswith('peer-count'):
             self.showPeerCount()
         else:
             self.usage()
@@ -135,6 +136,7 @@ class RegionProcessor():
         if len(sys.argv) == 5:
             self.node = sys.argv[4]
         instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
+        rows = []
         for instance in instanceList:
             if self.node != '' and self.node != instance.node:
                 continue
@@ -143,7 +145,8 @@ class RegionProcessor():
             for raft in raftList:
                 if raft.find("state_machine: Applying") != -1:
                     count += 1
-            print instance.node, count
+            rows.append([instance.node, count])
+        print tabulate(rows, headers = ['instance', 'applying-count'])
             
         
     def showRaftList(self):
@@ -169,20 +172,26 @@ class RegionProcessor():
         if len(sys.argv) == 5:
             self.node = sys.argv[4]
 
+        rows = []
+        metaRegionPeers = {}
+        metaRegionList = self.metaClient.getRegionInfo()
+        for reg in metaRegionList:
+            metaRegionPeers[reg['region_id']] = reg['peers']
         if self.node == '':
-            regionList = self.metaClient.getRegionInfo()
-        
-            for reg in regionList:
-                print reg['region_id'], reg['leader'], reg['peers']
+            for reg in metaRegionList:
+                rows.append([reg['region_id'], reg['leader'], reg['peers']])
         else:
-            if True:
-                instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
-                if instance == None:
-                    print "has not node :%s" % self.node
-                    return
-                regionList = instance.getRegionList()
-                for reg in regionList:
-                    print reg['region_id'], reg['leader']
+            instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
+            if instance == None:
+                print "has not instance %s" % self.node
+                return
+            regionList = instance.getRegionList()
+            for reg in regionList:
+                peers = 'None'
+                if reg['region_id'] in metaRegionPeers:
+                    peers = json.dumps(metaRegionPeers[reg['region_id']])
+                rows.append([reg['region_id'], reg['leader'],peers])
+        print tabulate(rows, headers = ['region_id','leader','peers'])
             
 
     def showRegionInfo(self):
@@ -275,12 +284,22 @@ class RegionProcessor():
         self.node = ''
         if (sys.argv) == 5:
             self.node = sys.argv[4]
+        requirePeerCount = -1
+        if self.cmd.find('=') != -1:
+            requirePeerCount = int(self.cmd.split('=')[-1])
         regionList = self.metaClient.getRegionInfo()
+        rows = []
         for reg in regionList:
             peerCnt = len(reg['peers'])
+            if requirePeerCount != -1 and requirePeerCount != peerCnt:
+                continue
             rid = reg['region_id']
             leader = reg['leader']
-            print "region_id:%d\tpeerCount:%d\tleader:%s\tpeers:%s" % (rid, peerCnt, leader, json.dumps(reg['peers']))
+            rows.append([rid, peerCnt, leader, json.dumps(reg['peers'])])
+            #print "region_id:%d\tpeerCount:%d\tleader:%s\tpeers:%s" % (rid, peerCnt, leader, json.dumps(reg['peers']))
+
+        print tabulate(rows, headers = ['region_id', 'peer_count', 'leader','peers'])
+        
 
 
     def removeIllegalRegion(self):

@@ -81,6 +81,46 @@ class MetaClient:
         except Exception,e:
             return []
 
+    def getInstanceInfoList(self, instance):
+	instanceQuery = '{"op_type": "QUERY_INSTANCE"}'
+	if instance != '':
+	    instanceQuery = '{"op_type": "QUERY_INSTANCE", "instance_address":"%s"}' % instance
+	res, errMsg = self.post('/MetaService/query', instanceQuery)
+	try:
+	    jsres = json.loads(res)
+	    insList = []	
+	    leaderCountDict = {}
+	    regionCountDict = {}
+	    for region in jsres['region_infos']:
+		leader = region['leader']
+		if leader not in leaderCountDict:
+		    leaderCountDict[leader] = 0
+		leaderCountDict[leader] += 1
+		for peer in region['peers']:
+		    if peer not in regionCountDict:
+			regionCountDict[peer] = 1
+		    else:
+			regionCountDict[peer] += 1
+	    for instance in jsres['instance_infos']:
+		addr = instance['address']
+		regionCount = 0
+		if addr in regionCountDict:
+		    regionCount = regionCountDict[addr]
+		leaderCount = 0
+		if addr in leaderCountDict:
+		    leaderCount = leaderCountDict[addr]
+		ins = {
+		    'address': addr,
+		    'status': instance['status'],
+		    'resource_tag': instance['resource_tag'],
+		    'region_count': regionCount,
+		    'leader_count': leaderCount
+		}
+		insList.append(ins)
+	    return insList
+	except Exception,e:
+	    return []
+
     def getInstanceStatusList(self):
         instanceList = self.getInstanceList()
         res = {}
@@ -154,24 +194,34 @@ class MetaClient:
             print traceback.format_exc()
             return False
 
-    def getLogicalRoom(self):
-	res, errMsg = self.post("/MetaService/query",'{"op_type":"QUERY_LOGICAL"}')
-	try:
-	    jsres = json.loads(res)
-	    return jsres['physical_rooms']
-	except Exception,e:
+    def getLogicalRoom(self, logicalRoom):
+        data = '{"op_type":"QUERY_LOGICAL"}'
+        if logicalRoom != '':
+            data = '{"op_type":"QUERY_LOGICAL", "logical_room":"%s"}' % logicalRoom
+        res, errMsg = self.post("/MetaService/query",data)
+        try:
+            jsres = json.loads(res)
+            if 'physical_rooms' not in jsres:
+                return []
+            return jsres['physical_rooms']
+        except Exception,e:
             print traceback.format_exc()
             return []
-	    
-    def getPhysicalRoom(self):
-	res, errMsg = self.post("/MetaService/query",'{"op_type":"QUERY_PHYSICAL"}')
-	try:
-	    jsres = json.loads(res)
-	    return jsres["physical_instances"]
-	except Exception,e:
+            
+    def getPhysicalRoom(self, physicalRoom):
+        data = '{"op_type":"QUERY_PHYSICAL"}'
+        if physicalRoom != '':
+            data = '{"op_type":"QUERY_PHYSICAL","physical_room":"%s"}' % physicalRoom
+        res, errMsg = self.post("/MetaService/query",data)
+        try:
+            jsres = json.loads(res)
+            if 'physical_instances' not in jsres:
+                return []
+            return jsres["physical_instances"]
+        except Exception,e:
             print traceback.format_exc()
             return []
-	    
+            
 
     def post(self,uri,data):
         res = None
