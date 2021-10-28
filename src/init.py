@@ -171,7 +171,6 @@ class InitProcessor():
                     ins['config'] = instanceConfigs[key]
 
 
-	    # 拷贝机器上run文件，提取cpu_cores和mem_limit
 
 
         for module in ('meta', 'store', 'db'):
