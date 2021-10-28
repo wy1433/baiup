@@ -20,6 +20,8 @@ class Instance():
         self.subPath = self.path.split('/')[-1]
         self.version = version
         self.config = None
+	self.cpuCores = '0-255'
+	self.memLimit = 512 * 1024 * 1024
         self.node = "%s:%d" % (self.host, self.port)
         if self.type == 'store':
             self.storeInteract = StoreInteract(self.host, self.port)
@@ -39,6 +41,10 @@ class Instance():
         stopData = open(stopTplPath).read().replace('__REP_PATH__REP__', self.subPath)
         runData = open(os.path.join(tplDir, self.type, "run")).read()
 
+	#run增加cpu cores和mem limit
+	runData = runData.replace('__CPU_CORES_LIST__', self.cpuCores)
+	runData = runData.replace('__MEM_LIMIT__', str(self.memLimit))
+
         
         nodeRestartFile = os.path.join(dirName, "restart_%s.sh" % self.node)
         open(nodeRestartFile ,'w').write(restartData)
@@ -49,6 +55,8 @@ class Instance():
         nodeRunFile = os.path.join(dirName, "run_%s.sh" % self.node)
         open(nodeRunFile, 'w').write(runData)
         os.chmod(nodeRunFile, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
+
+	
 
         if self.type == 'db':
             nodeDummyPortFile = os.path.join(dirName, 'dummy_server_%s.port' % self.node)
@@ -113,6 +121,10 @@ class Instance():
 
     def getRemoteConfig(self, fileName):
         if not util.execScpLocalCommand(self.host, fileName, os.path.join(self.path, "conf", "gflags.conf")):
+            exit(1)
+
+    def getRemoteRun(self, fileName):
+        if not util.execScpLocalCommand(self.host, fileName, os.path.join(self.path, "bin", "run")):
             exit(1)
 
     def getRegionCount(self):
@@ -240,7 +252,12 @@ class Instance():
                     path = ins['path']
                 else:
                     path = util.getDefaultPath(module, port)
+		cpuCores = None
                 instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path))
+		if 'mem_limit' in ins:
+		    instance.memLimit = ins['mem_limit']
+		if 'cpu_cores' in ins:
+		    instance.cpuCores = ins['cpu_cores']
                 if 'config' in ins:
                     instance.config = ins['config']
                 if instance.node == node:

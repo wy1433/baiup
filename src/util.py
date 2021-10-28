@@ -133,9 +133,18 @@ def getAliveTime(host, port, ty):
     else:
         return "%ds" % int(ts)
 
+def getCpuCoresMemLimit(fileName):
+    cpuCores = None
+    memLimit = None
+    for line in open(fileName):
+	if line.startswith('cpu_cores='):
+	    cpuCores = line.lstrip('cpu_cores=').strip()
+	if line.startswith('mem_limit='):
+	    memLimit = int(line.lstrip('mem_limit=').strip())
+    return cpuCores, memLimit
 
 if __name__ == '__main__':
     cmd = 'cd /home/work/BaikalDB_test/db && bash restart_by_supervise.sh'
     #print execSSHCommand('10.100.217.149',[cmd])
     #print checkNode("10.100.217.149",9010)
-    print getStartTime('10.100.217.149',28282,'db')
+    print getCpuCoresMemLimit('storage/clusters/devnew/script/10.100.217.149:8110_run.sh')

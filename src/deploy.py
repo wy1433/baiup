@@ -74,7 +74,8 @@ class DeployProcessor():
 
         DeployConfig.updateClusterDeployConfig(self.clusterName, self.deployConfig)
         self.deploy()
-        
+
+
     def deploy(self):
         configDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
 

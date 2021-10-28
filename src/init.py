@@ -97,6 +97,9 @@ class InitProcessor():
         configDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
         if not os.path.exists(configDir):
             os.makedirs(configDir)
+        scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "script")
+	if not os.path.exists(scriptDir):
+	    os.makedirs(scriptDir)
 
         metaList = DeployConfig.getMetaList(self.deployConfig)
         metaClient = MetaClient(",".join(metaList))
@@ -104,8 +107,6 @@ class InitProcessor():
         self.deployConfig['store'] = []
         for store in storeList:
             s = {"host":str(store.split(':')[0]), "port":int(store.split(':')[1])}
-            if store == '172.24.64.21:8112':
-                continue
             self.deployConfig['store'].append(s)
 
         msg = self.checkConfig()
@@ -113,6 +114,8 @@ class InitProcessor():
             print msg
             exit(0)
 
+        cpuCoresDict = {}
+	memLimitDict = {}
         packageConfig = ServerConfig.loadPkgServerConfig(self.deployConfig['global']['version'])
         for module in ('meta', 'store', 'db'):
             print module
@@ -136,6 +139,13 @@ class InitProcessor():
                     if wor not in commonConfigs:
                         commonConfigs[wor] = {}
                     commonConfigs[wor][instance.node] = 1
+	        runScriptFile = os.path.join(scriptDir, '%s_run.sh' % instance.node)
+	        instance.getRemoteRun(runScriptFile)
+	        cpuCores, memLimit = util.getCpuCoresMemLimit(runScriptFile)
+	        if cpuCores != None:
+		    cpuCoresDict[instance.node] = cpuCores
+	        if memLimit != None:
+		    memLimitDict[instance.node] = memLimit
             deployConfig = {}
             instanceConfigs = {}
             for key, value in commonConfigs.items():
@@ -161,3 +171,14 @@ class InitProcessor():
                     ins['config'] = instanceConfigs[key]
 
 
+	    # 拷贝机器上run文件，提取cpu_cores和mem_limit
+
+
+        for module in ('meta', 'store', 'db'):
+	    for ins in self.deployConfig[module]:
+		node = '%s:%d' % (ins['host'], ins['port'])
+		if node in cpuCoresDict:
+		    ins['cpu_cores'] = cpuCoresDict[node]
+		if node in memLimitDict:
+		    ins['mem_limit'] = memLimitDict[node]
+	

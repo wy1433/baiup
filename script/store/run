@@ -5,7 +5,10 @@ echo "Restart... $(date) " >> restart.log
 export TCMALLOC_SAMPLE_PARAMETER=524288
 export TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=209715200
 ulimit -u 10240
-# ulimit -n 65536 
+
 ulimit -c unlimited
+cpu_cores=__CPU_CORES_LIST__
+mem_limit=__MEM_LIMIT__
+ulimit -v $mem_limit
 sleep 5
-cd .. && nohup ./bin/baikalStore global:$self_port
+cd .. && nohup taskset -c $cpu_cores ./bin/baikalStore global:$self_port
