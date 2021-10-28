@@ -25,7 +25,7 @@ class MetaClient:
             url = 'http://%s/%s' % (addr, 'MetaService/raft_control')
             try:
                 req = urllib2.Request(url, self.getLeaderQuery)
-                response = urllib2.urlopen(req)
+                response = urllib2.urlopen(req, timeout = 1)
                 res = response.read()
                 break
             except Exception,e:
@@ -180,6 +180,7 @@ class MetaClient:
         res, errMsg = self.post("/MetaService/meta_manager", self.closeBalanceQuery)
         try:
             jsres = json.loads(res)
+	    print jsres
             return jsres['errcode'] == "SUCCESS"
         except Exception,e:
             print traceback.format_exc()
@@ -232,7 +233,7 @@ class MetaClient:
             try:
                 url = 'http://%s/%s' % (self.getLeader(), uri)
                 req = urllib2.Request(url, data)
-                response = urllib2.urlopen(req)
+                response = urllib2.urlopen(req, timeout = 1)
                 res = response.read()
             except Exception,e:
                 time.sleep(1)
