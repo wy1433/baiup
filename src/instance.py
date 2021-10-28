@@ -19,7 +19,7 @@ class Instance():
         self.path = path
         self.subPath = self.path.split('/')[-1]
         self.version = version
-        self.config = None
+        self.config = {}
 	self.cpuCores = '0-255'
 	self.memLimit = 512 * 1024 * 1024
         self.node = "%s:%d" % (self.host, self.port)
@@ -252,7 +252,6 @@ class Instance():
                     path = ins['path']
                 else:
                     path = util.getDefaultPath(module, port)
-		cpuCores = None
                 instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path))
 		if 'mem_limit' in ins:
 		    instance.memLimit = ins['mem_limit']

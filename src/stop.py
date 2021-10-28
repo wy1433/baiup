@@ -27,10 +27,13 @@ class StopProcessor():
         self.rootDir = self.deployConfig["global"]["root_dir"]
         self.module = ''
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) >= 4:
             s = sys.argv[3]
             if s in ('meta','db','store'):
                 self.module = s
+	    elif s.startswith('resource_tag='):
+		self.resource_tag = s[13:].strip()
             else:
                 self.node = s
         self.stopCluster()
@@ -42,10 +45,15 @@ class StopProcessor():
             moduleList = [self.module]
         for mod in moduleList:
             for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, mod):
-                key = instance.node
-                if key == self.node or self.node == '':
-                    instance.stop()
-                    stopCnt += 1
+		if self.node != '' and self.node != instance.node:
+		    continue
+		if self.resource_tag != None:
+		    if '-resource_tag' not in instance.config:
+			continue
+		    if instance.config['-resource_tag'] != self.resource_tag:
+		        continue
+                instance.stop()
+                stopCnt += 1
         if self.node != '' and stopCnt == 0:
             print "has't node %s" % self.node
             exit(1)

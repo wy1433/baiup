@@ -35,10 +35,13 @@ class UpgradeProcessor():
             exit(0)
         self.module = ''
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) >= 5:
             s = sys.argv[4]
             if s in ('meta','db','store'):
                 self.module = s
+	    elif s.startswith('resource_tag='):
+		self.resource_tag = s[13:].strip()
             else:
                 self.node = s
         
@@ -65,6 +68,11 @@ class UpgradeProcessor():
             for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, module):
                 if self.node != '' and instance.node != self.node:
                     continue
+		if self.resource_tag != None:
+		    if '-resource_tag' not in instance.config:
+			continue
+		    if instance.config['-resource_tag'] != self.resource_tag:
+		        continue
                 if upgradeCount != 0:
                     time.sleep(3)
                 print "update bin, %s" % instance.node

@@ -15,7 +15,7 @@ class DisplayProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "python main.py display clustername [db|store|meta|node]"
+        print "python main.py display clustername [db|store|meta|node|resource_tag=]"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -27,10 +27,13 @@ class DisplayProcessor():
 
         self.module = ''
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) >= 4:
             s = sys.argv[3]
             if s in ('meta','db','store'):
                 self.module = s
+	    elif s.startswith('resource_tag='):
+		self.resource_tag = s[13:].strip()
             else:
                 self.node = s
 
@@ -47,6 +50,11 @@ class DisplayProcessor():
                 key = instance.node
                 if self.node != '' and self.node != key:
                     continue
+		if self.resource_tag != None:
+		    if '-resource_tag' not in instance.config:
+			continue
+		    if instance.config['-resource_tag'] != self.resource_tag:
+		        continue
                 checkRet = instance.check()
                 if checkRet :
                     cnt = 0

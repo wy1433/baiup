@@ -94,10 +94,18 @@ class MetaProcessor():
 
     def queryInstance(self):
 	instance = ''
+	resource_tag = None
 	if len(sys.argv) == 5:
-	    instance = sys.argv[4]
+	    if sys.argv[4].startswith('resource_tag='):
+		resource_tag = sys.argv[4][13:].strip()
+	    else:
+	        instance = sys.argv[4]
 	rows = []
 	for ins in self.metaClient.getInstanceInfoList(instance): 
+	    if instance != '' and ins['address'] != instance:
+		continue
+	    if resource_tag != None and ins['resource_tag'] != resource_tag:
+		continue
 	    cols = [ins['address'], ins['resource_tag'], ins['status'], ins['leader_count'], ins['region_count']]
 	    rows.append(cols)
 	print tabulate(rows, headers = ['address','resource_tag','status','leader_count','region_count'])

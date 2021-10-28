@@ -32,9 +32,7 @@ class RegionProcessor():
         self.cmd = ''
         if len(sys.argv) >= 4:
             self.cmd = sys.argv[3]
-        if self.cmd == '':
-            self.showRegionList()
-        elif self.cmd == 'list':
+        if self.cmd == 'list':
             self.showRegionList()
         elif self.cmd == 'illegal':
             self.queryIllegalRegion()
@@ -65,7 +63,6 @@ class RegionProcessor():
             exit(0)
 
     def showRegionCount(self):
-        self.node = ''
         regionList = self.metaClient.getRegionInfo()
         allcount = len(regionList)
         storeRegionDict = {}
@@ -93,12 +90,23 @@ class RegionProcessor():
             rid = reg['region_id']
             metaRegionDict[rid] = reg
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) >= 5:
-            self.node = sys.argv[4]
+            if sys.argv[4].startswith('resource_tag='):
+                self.resource_tag = sys.argv[4][13:].strip()
+            else:
+                self.node = sys.argv[4]
 
         instanceList = []
         if self.node == '':
-            instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
+            tmpInstanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
+	    for instance in tmpInstanceList:
+		if self.resource_tag != None:
+		    if '-resource_tag' not in instance.config:
+			continue
+		    if instance.config['-resource_tag'] != self.resource_tag:
+			continue
+		instanceList.append(instance)
         else:
             instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
             if instance == None:
@@ -133,13 +141,22 @@ class RegionProcessor():
 
     def showApplyingCount(self):
         self.node = ''
+        self.resource_tag = None
         if len(sys.argv) == 5:
-            self.node = sys.argv[4]
+            if sys.argv[4].startswith('resource_tag='):
+                self.resource_tag = sys.argv[4][13:].strip()
+            else:
+                self.node = sys.argv[4]
         instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, "store")
         rows = []
         for instance in instanceList:
             if self.node != '' and self.node != instance.node:
                 continue
+            if self.resource_tag != None:
+                if '-resource_tag' not in instance.config:
+                    continue
+                if instance.config['-resource_tag'] != self.resource_tag:
+                    continue
             raftList = instance.getRaftList()
             count = 0
             for raft in raftList:
@@ -169,28 +186,37 @@ class RegionProcessor():
 
     def showRegionList(self):
         self.node = ''
+        self.resource_tag = None
         if len(sys.argv) == 5:
-            self.node = sys.argv[4]
+            if sys.argv[4].startswith('resource_tag='):
+                self.resource_tag = sys.argv[4][13:].strip()
+            else:
+                self.node = sys.argv[4]
 
         rows = []
         metaRegionPeers = {}
         metaRegionList = self.metaClient.getRegionInfo()
         for reg in metaRegionList:
             metaRegionPeers[reg['region_id']] = reg['peers']
-        if self.node == '':
+        if self.node == '' and self.resource_tag == None:
             for reg in metaRegionList:
                 rows.append([reg['region_id'], reg['leader'], reg['peers']])
         else:
-            instance = Instance.getInstanceListByDeployConfig(self.deployConfig, node = self.node)
-            if instance == None:
-                print "has not instance %s" % self.node
-                return
-            regionList = instance.getRegionList()
-            for reg in regionList:
-                peers = 'None'
-                if reg['region_id'] in metaRegionPeers:
-                    peers = json.dumps(metaRegionPeers[reg['region_id']])
-                rows.append([reg['region_id'], reg['leader'],peers])
+            instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig)
+            for instance in instanceList:
+                if self.node != '' and instance.node != self.node:
+                    continue
+                if self.resource_tag != None:
+                    if '-resource_tag' not in instance.config:
+                        continue
+                    if instance.config['-resource_tag'] != self.resource_tag:
+                        continue
+                regionList = instance.getRegionList()
+                for reg in regionList:
+                    peers = 'None'
+                    if reg['region_id'] in metaRegionPeers:
+                        peers = json.dumps(metaRegionPeers[reg['region_id']])
+                    rows.append([reg['region_id'], reg['leader'],peers])
         print tabulate(rows, headers = ['region_id','leader','peers'])
             
 

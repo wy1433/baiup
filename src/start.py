@@ -26,10 +26,13 @@ class StartProcessor():
         self.rootDir = self.deployConfig["global"]["root_dir"]
         self.module = ''
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) >= 4:
             s = sys.argv[3]
             if s in ('meta','db','store'):
                 self.module = s
+	    elif s.startswith('resource_tag='):
+		self.resource_tag = s[13:].strip()
             else:
                 self.node = s
         self.startCluster()
@@ -43,17 +46,15 @@ class StartProcessor():
             instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, mod)
             for instance in instanceList:
                 key = instance.node
-                if key == self.node or self.node == '':
-                    #print "start instance %s" % key
-                    instance.start()
-                    #time.sleep(2)
-                    #checkRet = instance.check()
-                    #if checkRet :
-                    #    print "start instance %s \033[1;32m succ \033[0m!" % key
-                    #else:
-                    #    print "start instance %s \033[1;31m faild \033[0m!" % key
-                    #    exit(1)
-                    startCnt += 1
+		if self.node != '' and self.node != instance.node:
+		    continue
+		if self.resource_tag != None:
+		    if '-resource_tag' not in instance.config:
+			continue
+		    if instance.config['-resource_tag'] != self.resource_tag:
+		        continue
+                instance.start()
+                startCnt += 1
         if self.node != '' and startCnt == 0:
             print "has't node %s" % self.node
             exit(1)
