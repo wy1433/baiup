@@ -246,8 +246,12 @@ class RegionProcessor():
 
     def showNoLeaderRegions(self):
         self.node = ''
+	self.resource_tag = None
         if len(sys.argv) == 5:
-           self.node = sys.argv[4]
+	    if sys.argv[4].startswith('resource_tag='):
+		self.resource_tag = sys.argv[4][13:]
+	    else:
+                self.node = sys.argv[4]
         metaRegionList = self.metaClient.getRegionInfo()
         metaRegionDict = {}
         instanceStatus = self.metaClient.getInstanceStatusList()
@@ -258,12 +262,15 @@ class RegionProcessor():
             rid = reg['region_id']
             metaRegionDict[rid] = reg
         for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, 'store'):
+            if instance == None or instance.check() == False:
+                continue
             if self.node != '' and self.node != instance.node:
                 continue
-            if instance == None or instance.check() == False:
-                #print "%s store is down!" % instance.node
-                continue
-
+	    if self.resource_tag != None:
+		if '-resource_tag' not in instance.config:
+		    continue
+		if instance.config['-resource_tag'] != self.resource_tag:
+		    continue
             regionList = instance.getRegionList()
             for region in regionList:
                 if region['leader'] == '0.0.0.0:0':
@@ -308,11 +315,26 @@ class RegionProcessor():
 
     def showPeerCount(self):
         self.node = ''
-        if (sys.argv) == 5:
-            self.node = sys.argv[4]
+	self.resource_tag = None
+        if len(sys.argv) == 5:
+	    if sys.argv[4].startswith('resource_tag='):
+		self.resource_tag = sys.argv[4][13:]
+	    else:
+                self.node = sys.argv[4]
         requirePeerCount = -1
         if self.cmd.find('=') != -1:
             requirePeerCount = int(self.cmd.split('=')[-1])
+	nodeDict = {}
+	instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig)
+	for instance in instanceList:
+	    if self.node != '' and instance.node != self.node:
+		continue
+	    if self.resource_tag != None:
+		if '-resource_tag' not in instance.config:
+		    continue
+		if instance.config['-resource_tag'] != self.resource_tag:
+		    continue
+	    nodeDict[instance.node] = 1
         regionList = self.metaClient.getRegionInfo()
         rows = []
         for reg in regionList:
@@ -321,8 +343,9 @@ class RegionProcessor():
                 continue
             rid = reg['region_id']
             leader = reg['leader']
+	    if leader not in nodeDict:
+		continue
             rows.append([rid, peerCnt, leader, json.dumps(reg['peers'])])
-            #print "region_id:%d\tpeerCount:%d\tleader:%s\tpeers:%s" % (rid, peerCnt, leader, json.dumps(reg['peers']))
 
         print tabulate(rows, headers = ['region_id', 'peer_count', 'leader','peers'])
         
