@@ -23,6 +23,7 @@ from init import InitProcessor
 from cluster import ClusterProcessor
 from region import RegionProcessor
 from meta import MetaProcessor
+from store import StoreProcessor
     
 
 def mainExecCommand():
@@ -55,6 +56,8 @@ def mainExecCommand():
 	processor = RegionProcessor()
     elif cmd == 'meta':
 	processor = MetaProcessor()
+    elif cmd == 'store':
+	processor = StoreProcessor()
     else:
 	print "usage: baiup cmd args"
 	return
