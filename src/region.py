@@ -187,17 +187,23 @@ class RegionProcessor():
     def showRegionList(self):
         self.node = ''
         self.resource_tag = None
+	self.db = None
         if len(sys.argv) == 5:
             if sys.argv[4].startswith('resource_tag='):
                 self.resource_tag = sys.argv[4][13:].strip()
+	    elif sys.argv[4].startswith('db='):
+		self.db = sys.argv[4][3:]
             else:
                 self.node = sys.argv[4]
 
         rows = []
         metaRegionPeers = {}
         metaRegionList = self.metaClient.getRegionInfo()
+	region2table = {}
         for reg in metaRegionList:
             metaRegionPeers[reg['region_id']] = reg['peers']
+	    table_id = reg['table_id']
+	    region2table[reg['region_id']] = table_id
         if self.node == '' and self.resource_tag == None:
             for reg in metaRegionList:
                 rows.append([reg['region_id'], reg['leader'], reg['peers']])
@@ -217,6 +223,21 @@ class RegionProcessor():
                     if reg['region_id'] in metaRegionPeers:
                         peers = json.dumps(metaRegionPeers[reg['region_id']])
                     rows.append([reg['region_id'], reg['leader'],peers])
+	#根据db过滤
+	if self.db != None:
+	    tableList = self.metaClient.getTableListByDatabase(self.db)
+	    tableIDDict = {}
+	    for table in tableList:
+		table_id = table['table_id']
+		tableIDDict[table_id] = 1
+	    newrows = []	
+	    for row in rows:
+		rid = row[0]
+		tid = region2table[rid]
+		if tid in tableIDDict:
+		    newrows.append(row)
+	    rows = newrows
+	
         print tabulate(rows, headers = ['region_id','leader','peers'])
             
 

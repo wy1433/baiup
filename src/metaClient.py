@@ -163,6 +163,15 @@ class MetaClient:
             print traceback.format_exc()
             return []
 
+    def getTableListByDatabase(self, dbname):
+	tableList = self.getTableSchema()
+	res = []
+	for table in tableList:
+	    if table['database'] != dbname:
+		continue
+	    res.append(table)
+	return res
+
 
     def getRegionInfo(self):
         res, errMsg = self.post('/MetaService/query', self.regionQuery)
