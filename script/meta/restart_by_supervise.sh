@@ -1,11 +1,11 @@
 #!/bin/bash
 path=__REP_PATH__REP__
 proj=baikalMeta
-#self_port=`grep port conf/gflags.conf | awk -F"=" '{print $2}'|sed 's/ //g'`
+self_port=`grep port conf/gflags.conf | awk -F"=" '{print $2}'|sed 's/ //g'`
 pid=`ps -ef | grep "$proj" |grep -v "grep" | grep "$self_port" | awk '{print $2}'`
 if [ "$pid" ]; then
     echo "stop: "$pid
-    kill -2 $pid
+    kill -9 $pid
 fi
 
 WAIT_SECS=600

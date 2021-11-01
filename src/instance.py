@@ -9,9 +9,10 @@ import time
 import sys
 from common import *
 from storeInteract import StoreInteract
+from metaClient import MetaClient
 
 class Instance():
-    def __init__(self, host, port,clusterName,ty,version, path):
+    def __init__(self, host, port,clusterName,ty,version, path, metaList):
         self.clusterName = clusterName
         self.type = ty
         self.host = host
@@ -25,6 +26,8 @@ class Instance():
         self.node = "%s:%d" % (self.host, self.port)
         if self.type == 'store':
             self.storeInteract = StoreInteract(self.host, self.port)
+	self.metaList = metaList
+	self.metaClient = MetaClient(','.join(self.metaList))
 
 
     def setConfig(self, config):
@@ -135,20 +138,27 @@ class Instance():
             return 0
         return len(rlist)
         
+    def transferMetaLeader(self):
+	print "transferMetaLeader:"
+	self.metaClient.transferMetaLeader(self.node)
 
     def start(self):
         if self.type == 'store' and self.check():
             self.transferAllLeader()
+
+	if self.type == 'meta' and self.check():
+	    self.transferMetaLeader()
+	    time.sleep(10)
         cmd = "cd %s && bash restart_by_supervise.sh" % self.path
-        sys.stdout.write("start instance %s\r" % self.node)
+        sys.stdout.write("%s begin start!\r" % self.node)
         sys.stdout.flush()
         util.execSSHCommand(self.host, cmd)
         time.sleep(2)
         checkRet = self.check()
         if checkRet:
-            print "start instance %s \033[1;32m succ \033[0m!" % self.node
+            print "%s start \033[1;32m succ \033[0m!" % self.node
         else:
-            print "start instance %s \033[1;31m faild \033[0m!" % self.node
+            print "%s start \033[1;31m faild \033[0m!" % self.node
             exit(0)
 
     def restart(self):
@@ -176,6 +186,9 @@ class Instance():
     def stop(self):
         if self.type == 'store':
             self.transferAllLeader()
+	if self.type == 'meta' and self.check():
+	    self.transferMetaLeader()
+	    time.sleep(10)
         cmd = "cd %s && bash stop.sh" % self.path
         sys.stdout.write("stop instance %s\r" % self.node)
         sys.stdout.flush()
@@ -183,9 +196,9 @@ class Instance():
         time.sleep(2)
         checkRet = self.check()
         if not checkRet:
-            print "stop instance %s \033[1;32m succ \033[0m!" % self.node
+            print "%s stop \033[1;32m succ \033[0m!" % self.node
         else:
-            print "stop instance %s \033[1;31m faild \033[0m!" % self.node
+            print "%s stop \033[1;31m faild \033[0m!" % self.node
             exit(0)
 
     def check(self):
@@ -244,6 +257,10 @@ class Instance():
         version = deployConfig['global']['version']
         if module != None:
             moduleList = [module]
+	metaList = []
+	for ins in deployConfig['meta']:
+	    tmpNode = '%s:%s' % (ins['host'], ins['port'])
+	    metaList.append(tmpNode)
         for module in moduleList:
             for ins in deployConfig[module]:
                 host = ins['host']
@@ -252,7 +269,7 @@ class Instance():
                     path = ins['path']
                 else:
                     path = util.getDefaultPath(module, port)
-                instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path))
+                instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path), metaList)
 		if 'mem_limit' in ins:
 		    instance.memLimit = ins['mem_limit']
 		if 'cpu_cores' in ins:

@@ -74,12 +74,12 @@ class UpgradeProcessor():
 		    if instance.config['-resource_tag'] != self.resource_tag:
 		        continue
                 if upgradeCount != 0:
-                    time.sleep(3)
-                print "update bin, %s" % instance.node
+                    time.sleep(10)
+                print "%s  update bin" % instance.node
                 instance.updateRemoteBin()
                 instance.updateRemoteConfig(os.path.join(localConfigDir, "%s.conf" % instance.node))
                 instance.restart()
-                print "upgrade %s \033[1;32m succ \033[0m!" % instance.node
+                print "%s  upgrade \033[1;32m succ \033[0m!" % instance.node
                 upgradeCount += 1
         if upgradeCount == 0 and self.node != '':
             print "has no instance %s" % self.node

@@ -15,16 +15,17 @@ class MetaClient:
         self.addrIndex = 0
         self.tableSchemaQuery = '{"op_type" : "QUERY_SCHEMA"}'
         self.regionQuery = '{"op_type" : "QUERY_REGION"}'
-        self.getLeaderQuery = '{"op_type" : "GetLeader","region_id":0}'
+        self.getLeaderQuery = '{"op_type" : "GetLeader","region_id":%s}'
         self.closeBalanceQuery = '{"op_type": "OP_CLOSE_LOAD_BALANCE"}'
         self.openBalanceQuery = '{"op_type": "OP_OPEN_LOAD_BALANCE"}'
 
-    def getLeader(self):
+    def getLeader(self, rid = 0):
         res = None
+	metaLeaderQuery = self.getLeaderQuery % rid
         for addr in self.addrList:
             url = 'http://%s/%s' % (addr, 'MetaService/raft_control')
             try:
-                req = urllib2.Request(url, self.getLeaderQuery)
+                req = urllib2.Request(url, metaLeaderQuery)
                 response = urllib2.urlopen(req, timeout = 1)
                 res = response.read()
                 break
@@ -172,6 +173,19 @@ class MetaClient:
 	    res.append(table)
 	return res
 
+    def transferMetaLeader(self, oldLeader):
+	for rid in (0,1,2):
+	    leader = self.getLeader(rid)
+	    if leader != oldLeader:
+		continue
+	    for ins in self.addrList:
+		if ins != leader:
+		    transferLeaderQuery = '{"op_type" : "TransLeader","region_id" : %d,"new_leader" : "%s"}' % (rid, ins)
+		    self.post('/MetaService/raft_control', transferLeaderQuery, rid)
+		    break
+
+	    
+
 
     def getRegionInfo(self):
         res, errMsg = self.post('/MetaService/query', self.regionQuery)
@@ -233,14 +247,14 @@ class MetaClient:
             return []
             
 
-    def post(self,uri,data):
+    def post(self,uri,data, region_id = 0):
         res = None
         tryTimes = 3
         errorMsg = ''
         while tryTimes:
             tryTimes -= 1
             try:
-                url = 'http://%s/%s' % (self.getLeader(), uri)
+                url = 'http://%s/%s' % (self.getLeader(region_id), uri)
                 req = urllib2.Request(url, data)
                 response = urllib2.urlopen(req, timeout = 1)
                 res = response.read()
