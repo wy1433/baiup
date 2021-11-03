@@ -58,6 +58,8 @@ class StoreInteract():
         uri = 'raft_stat'
         data = ''
         res = self.get(uri)
+	if res == None:
+	    return None
         reslist = res.split('\n\n')
         return reslist
 
@@ -139,7 +141,7 @@ class StoreInteract():
 
     def post(self,uri,data):
         res = None
-        tryTimes = 3
+        tryTimes = 1
         errorMsg = ''
         while tryTimes:
             tryTimes -= 1
@@ -150,16 +152,14 @@ class StoreInteract():
                 res = response.read()
                 res = json.loads(res)
             except Exception,e:
-                time.sleep(1)
                 continue
             break
         if res == None:
-            print traceback.format_exc()
             return res
         return res
 
     def get(self, uri):
-        tryTimes = 3
+        tryTimes = 1
         while tryTimes:
             tryTimes -= 1
             try:
@@ -171,8 +171,6 @@ class StoreInteract():
                 res = res.replace('\r\n','\n').strip()
                 return res
             except Exception,e:
-                time.sleep(1)
-                print traceback.format_exc()
                 continue
             break
         return None

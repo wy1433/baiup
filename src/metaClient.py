@@ -30,7 +30,6 @@ class MetaClient:
                 res = response.read()
                 break
             except Exception,e:
-                print str(e)
                 continue
         if res == None:
             return None
@@ -39,7 +38,6 @@ class MetaClient:
             leader = jsres['leader']
             return leader
         except Exception,e:
-            print traceback.format_exc()
             return None
             
 
@@ -161,7 +159,6 @@ class MetaClient:
                 return []
             return jsres['schema_infos']
         except Exception,e:
-            print traceback.format_exc()
             return []
 
     def getTableListByDatabase(self, dbname):
@@ -195,7 +192,6 @@ class MetaClient:
                 return []
             return jsres['region_infos']
         except Exception,e:
-            print traceback.format_exc()
             return []
 
                 
@@ -229,7 +225,6 @@ class MetaClient:
                 return []
             return jsres['physical_rooms']
         except Exception,e:
-            print traceback.format_exc()
             return []
             
     def getPhysicalRoom(self, physicalRoom):
@@ -243,7 +238,6 @@ class MetaClient:
                 return []
             return jsres["physical_instances"]
         except Exception,e:
-            print traceback.format_exc()
             return []
             
 
@@ -263,11 +257,10 @@ class MetaClient:
                 continue
             break
         if res == None:
-            print traceback.format_exc()
             return res, errorMsg
         return res,''
 
 
 if __name__ == '__main__':
-    meta = MetaClient('10.100.217.149:9010,10.100.217.150:9010')
-    print meta.getInstanceRegionCount('10.100.217.149:8116')
+    meta = MetaClient('10.100.217.148:9010,10.100.217.149:8010,10.100.217.150:8010')
+    print meta.getLeader()
