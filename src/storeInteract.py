@@ -148,7 +148,7 @@ class StoreInteract():
             try:
                 url = 'http://%s:%d/%s' % (self.host, self.port, uri)
                 req = urllib2.Request(url, data)
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
                 res = json.loads(res)
             except Exception,e:
@@ -166,7 +166,7 @@ class StoreInteract():
                 headers = {'User-Agent':'curl/7.29.0'}
                 url = 'http://%s:%d/%s' % (self.host, self.port, uri)
                 req = urllib2.Request(url, headers = headers, data = '{}')
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
                 res = res.replace('\r\n','\n').strip()
                 return res
