@@ -58,6 +58,8 @@ class StoreInteract():
         uri = 'raft_stat'
         data = ''
         res = self.get(uri)
+	if res == None:
+	    return None
         reslist = res.split('\n\n')
         return reslist
 
@@ -146,7 +148,7 @@ class StoreInteract():
             try:
                 url = 'http://%s:%d/%s' % (self.host, self.port, uri)
                 req = urllib2.Request(url, data)
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
                 res = json.loads(res)
             except Exception,e:
@@ -159,20 +161,20 @@ class StoreInteract():
         return res
 
     def get(self, uri):
-        tryTimes = 3
+        tryTimes = 1
         while tryTimes:
             tryTimes -= 1
             try:
                 headers = {'User-Agent':'curl/7.29.0'}
                 url = 'http://%s:%d/%s' % (self.host, self.port, uri)
                 req = urllib2.Request(url, headers = headers, data = '{}')
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
                 res = res.replace('\r\n','\n').strip()
                 return res
             except Exception,e:
                 time.sleep(1)
-                print traceback.format_exc()
+                #print traceback.format_exc()
                 continue
             break
         return None

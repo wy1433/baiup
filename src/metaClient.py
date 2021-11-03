@@ -26,7 +26,7 @@ class MetaClient:
             url = 'http://%s/%s' % (addr, 'MetaService/raft_control')
             try:
                 req = urllib2.Request(url, metaLeaderQuery)
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
                 break
             except Exception,e:
@@ -256,7 +256,7 @@ class MetaClient:
             try:
                 url = 'http://%s/%s' % (self.getLeader(region_id), uri)
                 req = urllib2.Request(url, data)
-                response = urllib2.urlopen(req, timeout = 1)
+                response = urllib2.urlopen(req, timeout = 2)
                 res = response.read()
             except Exception,e:
                 time.sleep(1)

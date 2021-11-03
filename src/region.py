@@ -158,6 +158,9 @@ class RegionProcessor():
                 if instance.config['-resource_tag'] != self.resource_tag:
                     continue
             raftList = instance.getRaftList()
+	    if raftList == None:
+		rows.append([instance.node, "DOWN"])
+		continue
             count = 0
             for raft in raftList:
                 if raft.find("state_machine: Applying") != -1:
