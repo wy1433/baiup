@@ -18,7 +18,7 @@ class MetaProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "baiup meta cluster close-balance|open-balance|logical|physical|instance"
+        print "baiup meta cluster close-balance|open-balance|logical|physical|instance|transfer-leader|get-leader"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -44,6 +44,10 @@ class MetaProcessor():
             self.queryPhysicalRoom()
         elif self.cmd == "instance":
             self.queryInstance()
+	elif self.cmd == "transfer-leader":
+	    self.transferLeader()
+	elif self.cmd == "get-leader":
+	    self.getLeader()
         else:
             self.usage()
             exit(0)
@@ -109,3 +113,18 @@ class MetaProcessor():
 	    cols = [ins['address'], ins['resource_tag'], ins['status'], ins['leader_count'], ins['region_count']]
 	    rows.append(cols)
 	print tabulate(rows, headers = ['address','resource_tag','status','leader_count','region_count'])
+    def transferLeader(self):
+	if len(sys.argv) != 5:
+	    print "usage: baiup meta cluster transfer-leader ip:port"
+	    return
+	instance = sys.argv[4]
+	self.metaClient.transferMetaLeader(instance)
+        print "transfer-leader %s success" % instance
+
+    def getLeader(self):
+	leaders = self.metaClient.getLeader()
+        rows = []
+	for region_id in (0,1,2):
+	    leader = self.metaClient.getLeader(region_id)
+	    rows.append([region_id, leader])
+	print tabulate(rows, headers = ['region_id','leader'])
