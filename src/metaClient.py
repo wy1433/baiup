@@ -239,6 +239,17 @@ class MetaClient:
             return jsres["physical_instances"]
         except Exception,e:
             return []
+
+    def getUserPrivileges(self):
+	data = '{"op_type":"QUERY_USERPRIVILEG"}'
+        res, errMsg = self.post("/MetaService/query",data)
+	try:
+	    jsres = json.loads(res)
+	    if 'user_privilege' not in jsres:
+		return None
+	    return jsres['user_privilege']
+	except Exception,e:
+	    return None
             
 
     def post(self,uri,data, region_id = 0):

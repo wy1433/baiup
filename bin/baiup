@@ -24,6 +24,7 @@ from cluster import ClusterProcessor
 from region import RegionProcessor
 from meta import MetaProcessor
 from store import StoreProcessor
+from connect import ConnectProcessor
     
 
 def mainExecCommand():
@@ -53,14 +54,16 @@ def mainExecCommand():
     elif cmd == 'cluster':
         processor = ClusterProcessor()
     elif cmd == 'region':
-	processor = RegionProcessor()
+        processor = RegionProcessor()
     elif cmd == 'meta':
-	processor = MetaProcessor()
+        processor = MetaProcessor()
     elif cmd == 'store':
-	processor = StoreProcessor()
+        processor = StoreProcessor()
+    elif cmd == 'connect':
+        processor = ConnectProcessor()
     else:
-	print "usage: baiup cmd args"
-	return
+        print "usage: baiup cmd args"
+        return
     processor.process()
 
 
