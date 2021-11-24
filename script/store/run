@@ -8,7 +8,7 @@ ulimit -u 10240
 
 ulimit -c unlimited
 cpu_cores=__CPU_CORES_LIST__
-mem_limit=__MEM_LIMIT__
-ulimit -v $mem_limit
+#mem_limit=__MEM_LIMIT__
+#ulimit -v $mem_limit
 sleep 5
 cd .. && nohup taskset -c $cpu_cores ./bin/baikalStore global:$self_port
