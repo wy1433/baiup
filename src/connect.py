@@ -35,14 +35,26 @@ class ConnectProcessor():
     def getUserDict(self):
         userDict = {}
         user_privileges = self.metaClient.getUserPrivileges()
+        dblist = self.metaClient.getDatabases()
+        dbdict = {}
+        for db in dblist:
+            ns = db['namespace_name']
+            dbname = db['database']
+            if ns not in dbdict:
+                dbdict[ns] = {}
+            dbdict[ns][dbname] = 1
         for user_info in user_privileges:
             namespace_name = user_info['namespace_name']
+            if namespace_name not in dbdict:
+                continue
             user_name = user_info['username']
             password = user_info['password']
             if 'privilege_database' not in user_info:
                 continue
             for dbinfo in user_info['privilege_database']:
                 dbname = dbinfo['database']
+                if dbname not in dbdict[namespace_name]:
+                    continue
                 if dbname not in userDict:
                     userDict[dbname] = {}
                 userDict[dbname][namespace_name] = {"user":user_name,"password":password}

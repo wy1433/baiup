@@ -21,7 +21,7 @@ class MetaClient:
 
     def getLeader(self, rid = 0):
         res = None
-	metaLeaderQuery = self.getLeaderQuery % rid
+        metaLeaderQuery = self.getLeaderQuery % rid
         for addr in self.addrList:
             url = 'http://%s/%s' % (addr, 'MetaService/raft_control')
             try:
@@ -81,44 +81,44 @@ class MetaClient:
             return []
 
     def getInstanceInfoList(self, instance):
-	instanceQuery = '{"op_type": "QUERY_INSTANCE"}'
-	if instance != '':
-	    instanceQuery = '{"op_type": "QUERY_INSTANCE", "instance_address":"%s"}' % instance
-	res, errMsg = self.post('/MetaService/query', instanceQuery)
-	try:
-	    jsres = json.loads(res)
-	    insList = []	
-	    leaderCountDict = {}
-	    regionCountDict = {}
-	    for region in jsres['region_infos']:
-		leader = region['leader']
-		if leader not in leaderCountDict:
-		    leaderCountDict[leader] = 0
-		leaderCountDict[leader] += 1
-		for peer in region['peers']:
-		    if peer not in regionCountDict:
-			regionCountDict[peer] = 1
-		    else:
-			regionCountDict[peer] += 1
-	    for instance in jsres['instance_infos']:
-		addr = instance['address']
-		regionCount = 0
-		if addr in regionCountDict:
-		    regionCount = regionCountDict[addr]
-		leaderCount = 0
-		if addr in leaderCountDict:
-		    leaderCount = leaderCountDict[addr]
-		ins = {
-		    'address': addr,
-		    'status': instance['status'],
-		    'resource_tag': instance['resource_tag'],
-		    'region_count': regionCount,
-		    'leader_count': leaderCount
-		}
-		insList.append(ins)
-	    return insList
-	except Exception,e:
-	    return []
+        instanceQuery = '{"op_type": "QUERY_INSTANCE"}'
+        if instance != '':
+            instanceQuery = '{"op_type": "QUERY_INSTANCE", "instance_address":"%s"}' % instance
+        res, errMsg = self.post('/MetaService/query', instanceQuery)
+        try:
+            jsres = json.loads(res)
+            insList = []
+            leaderCountDict = {}
+            regionCountDict = {}
+            for region in jsres['region_infos']:
+                leader = region['leader']
+                if leader not in leaderCountDict:
+                    leaderCountDict[leader] = 0
+                leaderCountDict[leader] += 1
+                for peer in region['peers']:
+                    if peer not in regionCountDict:
+                        regionCountDict[peer] = 1
+                    else:
+                        regionCountDict[peer] += 1
+            for instance in jsres['instance_infos']:
+                addr = instance['address']
+                regionCount = 0
+                if addr in regionCountDict:
+                    regionCount = regionCountDict[addr]
+                leaderCount = 0
+                if addr in leaderCountDict:
+                    leaderCount = leaderCountDict[addr]
+                ins = {
+                    'address': addr,
+                    'status': instance['status'],
+                    'resource_tag': instance['resource_tag'],
+                    'region_count': regionCount,
+                    'leader_count': leaderCount
+                }
+                insList.append(ins)
+            return insList
+        except Exception,e:
+            return []
 
     def getInstanceStatusList(self):
         instanceList = self.getInstanceList()
@@ -162,26 +162,26 @@ class MetaClient:
             return []
 
     def getTableListByDatabase(self, dbname):
-	tableList = self.getTableSchema()
-	res = []
-	for table in tableList:
-	    if table['database'] != dbname:
-		continue
-	    res.append(table)
-	return res
+        tableList = self.getTableSchema()
+        res = []
+        for table in tableList:
+            if table['database'] != dbname:
+                continue
+            res.append(table)
+        return res
 
     def transferMetaLeader(self, oldLeader):
-	for rid in (0,1,2):
-	    leader = self.getLeader(rid)
-	    if leader != oldLeader:
-		continue
-	    for ins in self.addrList:
-		if ins != leader:
-		    transferLeaderQuery = '{"op_type" : "TransLeader","region_id" : %d,"new_leader" : "%s"}' % (rid, ins)
-		    self.post('/MetaService/raft_control', transferLeaderQuery, rid)
-		    break
+        for rid in (0,1,2):
+            leader = self.getLeader(rid)
+            if leader != oldLeader:
+                continue
+            for ins in self.addrList:
+                if ins != leader:
+                    transferLeaderQuery = '{"op_type" : "TransLeader","region_id" : %d,"new_leader" : "%s"}' % (rid, ins)
+                    self.post('/MetaService/raft_control', transferLeaderQuery, rid)
+                    break
 
-	    
+            
 
 
     def getRegionInfo(self):
@@ -199,7 +199,7 @@ class MetaClient:
         res, errMsg = self.post("/MetaService/meta_manager", self.closeBalanceQuery)
         try:
             jsres = json.loads(res)
-	    print jsres
+            print jsres
             return jsres['errcode'] == "SUCCESS"
         except Exception,e:
             print traceback.format_exc()
@@ -226,6 +226,17 @@ class MetaClient:
             return jsres['physical_rooms']
         except Exception,e:
             return []
+
+    def getDatabases(self):
+        data = '{"op_type" : "QUERY_DATABASE"}'
+        res, errMsg = self.post("/MetaService/query", data)
+        try:
+            jsres = json.loads(res)
+            if 'database_infos' not in jsres:
+                return []
+            return jsres['database_infos']
+        except Exception,e:
+            return []
             
     def getPhysicalRoom(self, physicalRoom):
         data = '{"op_type":"QUERY_PHYSICAL"}'
@@ -241,15 +252,15 @@ class MetaClient:
             return []
 
     def getUserPrivileges(self):
-	data = '{"op_type":"QUERY_USERPRIVILEG"}'
+        data = '{"op_type":"QUERY_USERPRIVILEG"}'
         res, errMsg = self.post("/MetaService/query",data)
-	try:
-	    jsres = json.loads(res)
-	    if 'user_privilege' not in jsres:
-		return None
-	    return jsres['user_privilege']
-	except Exception,e:
-	    return None
+        try:
+            jsres = json.loads(res)
+            if 'user_privilege' not in jsres:
+                return None
+            return jsres['user_privilege']
+        except Exception,e:
+            return None
             
 
     def post(self,uri,data, region_id = 0):
