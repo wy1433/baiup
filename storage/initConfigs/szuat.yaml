@@ -1,34 +1,44 @@
-global:
-  version: 1.1.6.1
-
-meta:
-- host: 10.100.217.113
-  port: 8010
-- host: 10.100.216.110
-  port: 8010
-- host: 10.100.202.31
-  port: 8010
-
-store:
-- host: 10.100.217.113
-  port: 8110
-- host: 10.100.216.110
-  port: 8110
-- host: 10.100.202.31
-  port: 8110
-- host: 10.100.202.93
-  port: 8110
-- host: 10.100.216.115
-  port: 8110
-
 db:
 - host: 10.100.217.113
+  path: db
   port: 28282
 - host: 10.100.216.110
+  path: db
   port: 28282
 - host: 10.100.202.31
+  path: db
   port: 28282
 - host: 10.100.202.93
+  path: db
   port: 28282
-- host: 10.100.216.115
-  port: 28282
+global:
+  cluster: szuat
+  root_dir: /home/work/BaikalDB
+  version: v2.0.2.4
+meta:
+- host: 10.100.217.113
+  path: meta
+  port: 8010
+- host: 10.100.216.110
+  path: meta
+  port: 8010
+- host: 10.100.202.31
+  path: meta
+  port: 8010
+service_config:
+  store:
+    default_logical_room: sz
+    default_physical_room: sz1
+store:
+- host: 10.100.217.113
+  path: store
+  port: 8110
+- host: 10.100.216.110
+  path: store
+  port: 8110
+- host: 10.100.202.31
+  path: store
+  port: 8110
+- host: 10.100.202.93
+  path: store
+  port: 8110
