@@ -12,6 +12,7 @@ from common import *
 from deployConfig import DeployConfig
 from serverConfig import ServerConfig
 from instance import Instance
+from metaClient import MetaClient
 
 
 class DeployProcessor():
@@ -76,12 +77,34 @@ class DeployProcessor():
         self.deploy()
 
 
+    def getPhysicalRoomList(self):
+        res = {}
+        for store in self.deployConfig['store']:
+	    if 'config' not in store:
+		continue
+            if '-default_logical_room' not in store['config']:
+                continue
+            logicalRoom = store['config']['-default_logical_room']
+            if logicalRoom not in res:
+                res[logicalRoom] = []
+            if '-default_physical_room' not in store['config']:
+                continue
+            physicalRoom = store['config']['-default_physical_room']
+            if physicalRoom not in res[logicalRoom]:
+                res[logicalRoom].append(physicalRoom)
+        return res
+
     def deploy(self):
         configDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
 
         ServerConfig.initServerConfig(self.deployConfig, configDir)
 
+        self.physicalRooms = self.getPhysicalRoomList()
+        self.metaList = DeployConfig.getMetaList(self.deployConfig)
+        self.metaClient = MetaClient(','.join(self.metaList))
         for module in ('meta', 'store', 'db'):
+	    if module == 'meta':
+		continue
             instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, module)
             scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
             for instance in instanceList:
@@ -94,7 +117,6 @@ class DeployProcessor():
                 instance.updateRemoteScript(scriptDir)
 
 
-            continue
             for instance in instanceList:
                 instance.start()
                 time.sleep(2)
@@ -103,6 +125,33 @@ class DeployProcessor():
                 else:
                     print "start %s faild" % (instance.node)
                     exit(1)
+	    if module == 'meta':
+		self.initMeta()
+            
+	    if module == 'store':
+		self.initDB()
+                
+
+    def initDB(self):
+	pass
+	
+
+    def initMeta(self):
+        # init meta
+        # step 1 add logical room
+        if len(self.physicalRooms) == 0:
+            self.metaClient.addLogicalRoom(['default'])
+            self.metaClient.addPhysicalRoom('default',['default'])
+	    return
+        logicalRoomList = self.physicalRooms.keys()
+            
+        self.metaClient.addLogicalRoom(logicalRoomList)
+        # step 2 add physical room
+        for logicalRoom, physicalRoomList in self.physicalRooms.items():
+            if len(physicalRoomList) == 0:
+                self.metaClient.addPhysicalRoom(logicalRoom, ['default'])
+                continue
+            self.metaClient.addPhysicalRoom(logicalRoom, physicalRoomList)
                 
 
     def checkVersion(self):
