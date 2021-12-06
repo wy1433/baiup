@@ -94,21 +94,39 @@ class DeployProcessor():
                 res[logicalRoom].append(physicalRoom)
         return res
 
+    def getResourceTags(self):
+        res = {}
+	if 'server_configs' in self.deployConfig:
+	    if 'store' in self.deployConfig['server_configs']:
+	        if '-resource_tag' in self.deployConfig['server_configs']['store']:
+		    res[self.deployConfig['server_configs']['store']['-resource_tag']] = 1
+        for store in self.deployConfig['store']:
+	    if 'config' not in store:
+		continue
+            if '-resource_tag' not in store['config']:
+                continue
+	    res[store['config']['-resource_tag']] = 1
+	if len(res) == 0:
+	    res[''] = 1
+        return res.keys()
+
     def deploy(self):
         configDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
 
         ServerConfig.initServerConfig(self.deployConfig, configDir)
 
         self.physicalRooms = self.getPhysicalRoomList()
+	self.resourceTags = self.getResourceTags()
         self.metaList = DeployConfig.getMetaList(self.deployConfig)
         self.metaClient = MetaClient(','.join(self.metaList))
         for module in ('meta', 'store', 'db'):
-	    if module == 'meta':
-		continue
             instanceList = Instance.getInstanceListByDeployConfig(self.deployConfig, module)
             scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
             for instance in instanceList:
                 print instance.node, "init"
+		if instance.check():
+		    print "instance %s has been inited!" % instance.node
+		    continue
                 instance.makeRemoteDir()
 
                 instance.updateRemoteBin()
@@ -118,6 +136,9 @@ class DeployProcessor():
 
 
             for instance in instanceList:
+		if instance.check():
+		    print "instance %s has been started!" % instance.node
+		    continue
                 instance.start()
                 time.sleep(2)
                 if instance.check():
@@ -133,7 +154,27 @@ class DeployProcessor():
                 
 
     def initDB(self):
-	pass
+	self.metaClient.createNamespace("INTERNAL")
+	self.metaClient.createDatabase("INTERNAL", "baikaldb")
+	interTableInfo = {
+	    "table_name": "__baikaldb_instance",
+	    "resource_tag": self.resourceTags[0],
+	    "fields": [ 
+		{
+                    "field_name" : "instance_id",
+                    "mysql_type" : "UINT64",
+                    "auto_increment" : True
+                }
+            ],
+            "indexs": [ 
+                {
+                    "index_name" : "priamry_key",
+                    "index_type" : "I_PRIMARY",
+                    "field_names": ["instance_id"]
+                }
+            ]
+	}
+	self.metaClient.createTable("INTERNAL","baikaldb", interTableInfo)
 	
 
     def initMeta(self):

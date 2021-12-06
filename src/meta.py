@@ -18,7 +18,7 @@ class MetaProcessor():
     def __init__(self):
         pass
     def usage(self):
-        print "baiup meta cluster close-balance|open-balance|logical|physical|instance|transfer-leader|get-leader"
+        print "baiup meta cluster close-balance|open-balance|logical|physical|instance|transfer-leader|get-leader|table"
 
     def process(self):
         if len(sys.argv) < 3:
@@ -48,6 +48,8 @@ class MetaProcessor():
 	    self.transferLeader()
 	elif self.cmd == "get-leader":
 	    self.getLeader()
+	elif self.cmd == "table":
+	    self.getTables()
         else:
             self.usage()
             exit(0)
@@ -128,3 +130,20 @@ class MetaProcessor():
 	    leader = self.metaClient.getLeader(region_id)
 	    rows.append([region_id, leader])
 	print tabulate(rows, headers = ['region_id','leader'])
+    def getTables(self):
+	tableList = self.metaClient.getTableSchema()
+	table_id = ''
+	if len(sys.argv) == 5:
+	    table_id = int(sys.argv[4])
+	if table_id == '':
+	    rows = []
+	    for table in tableList:
+	        rows.append([table['namespace_name'], table['database'], table['table_name'], table['table_id']])
+
+            print tabulate(rows, headers = ['namespace','database','table','table_id'])
+	else:
+	    for table in tableList:
+		if table['table_id'] != table_id:
+		    continue
+		print json.dumps(table, indent = 4)
+		break

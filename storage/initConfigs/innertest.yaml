@@ -1,0 +1,135 @@
+db:
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.42
+  path: db
+  port: 28282
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.53
+  path: db
+  port: 28282
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.18.175.253
+  path: db
+  port: 28282
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.30.113.253
+  path: db
+  port: 28282
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.50
+  path: db
+  port: 28282
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.51
+  path: db
+  port: 28282
+global:
+  cluster: innertest
+  root_dir: /home/work/BaikalDB
+  version: v2.0.2.4
+meta:
+- host: 172.30.113.253
+  path: meta
+  port: 8010
+- host: 172.18.235.53
+  path: meta
+  port: 8010
+- host: 172.30.113.51
+  path: meta
+  port: 8010
+server_configs:
+  db:
+    -default_2pc: 'true'
+    -fetch_instance_id: 'true'
+    -field_charsetnr_set_by_client: 'true'
+    -remove_sql_comments: 'true'
+    -socket_max_unwritten_bytes: '536870912'
+  store:
+    -disable_write_wait_timeout_us: '5000000'
+    -print_time_us: '10000'
+    -resource_tag: train
+store:
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.42
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.53
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.50
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.51
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.18.175.253
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.30.113.253
+  path: store
+  port: 8110
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.42
+  path: store1
+  port: 8111
+- config:
+    -default_logical_room: wx
+    -default_physical_room: wx1
+  host: 172.18.235.53
+  path: store1
+  port: 8111
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.50
+  path: store1
+  port: 8111
+- config:
+    -default_logical_room: xhy
+    -default_physical_room: xhy1
+  host: 172.30.113.51
+  path: store1
+  port: 8111
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.18.175.253
+  path: store1
+  port: 8111
+- config:
+    -default_logical_room: th
+    -default_physical_room: th1
+  host: 172.30.113.253
+  path: store1
+  port: 8111

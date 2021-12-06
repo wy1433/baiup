@@ -302,12 +302,13 @@ class MetaClient:
 	    return False
 
     def createTable(self, ns, db, tableInfo):
-	data = '{"op_type":"OP_CREATE_DATABASE","database_info":{"namespace_name": "%s","quota": 1048576, "database":"%s"}}' % (ns, db)
+	data = '{"op_type":"OP_CREATE_TABLE","table_info":{"namespace_name": "%s","resource_tag": "%s", "database":"%s", "table_name":"%s", "fields":%s, "indexs":%s}}' % (ns, tableInfo['resource_tag'], db, tableInfo['table_name'], json.dumps(tableInfo['fields']), json.dumps(tableInfo['indexs']))
 	res, errMsg = self.post("MetaService/meta_manager", data)
 	try:
 	    jsres = json.loads(res)
 	    return jsres['errcode'] == 'SUCCESS'
 	except Exception, e:
+	    print str(e)
 	    return False
 
     def getUserPrivileges(self):
