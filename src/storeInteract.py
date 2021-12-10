@@ -58,8 +58,8 @@ class StoreInteract():
         uri = 'raft_stat'
         data = ''
         res = self.get(uri)
-	if res == None:
-	    return None
+        if res == None:
+            return None
         reslist = res.split('\n\n')
         return reslist
 

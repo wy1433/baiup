@@ -137,10 +137,10 @@ def getCpuCoresMemLimit(fileName):
     cpuCores = None
     memLimit = None
     for line in open(fileName):
-	if line.startswith('cpu_cores='):
-	    cpuCores = line[10:].strip()
-	if line.startswith('mem_limit='):
-	    memLimit = int(line[10:].strip())
+        if line.startswith('cpu_cores='):
+            cpuCores = line[10:].strip()
+        if line.startswith('mem_limit='):
+            memLimit = int(line[10:].strip())
     return cpuCores, memLimit
 
 if __name__ == '__main__':

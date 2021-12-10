@@ -127,4 +127,5 @@ class ConnectProcessor():
         port = dbnode.split(':')[1]
 
         cmd = 'mysql -h%s -P%s -u%s -p%s -D%s' % (host, port, self.userDict[dbname][namespace]['user'], self.userDict[dbname][namespace]['password'], dbname)
+        print cmd
         os.system(cmd)

@@ -98,8 +98,8 @@ class InitProcessor():
         if not os.path.exists(configDir):
             os.makedirs(configDir)
         scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "script")
-	if not os.path.exists(scriptDir):
-	    os.makedirs(scriptDir)
+        if not os.path.exists(scriptDir):
+            os.makedirs(scriptDir)
 
         metaList = DeployConfig.getMetaList(self.deployConfig)
         metaClient = MetaClient(",".join(metaList))
@@ -115,7 +115,7 @@ class InitProcessor():
             exit(0)
 
         cpuCoresDict = {}
-	memLimitDict = {}
+        memLimitDict = {}
         packageConfig = ServerConfig.loadPkgServerConfig(self.deployConfig['global']['version'])
         for module in ('meta', 'store', 'db'):
             print module
@@ -139,13 +139,13 @@ class InitProcessor():
                     if wor not in commonConfigs:
                         commonConfigs[wor] = {}
                     commonConfigs[wor][instance.node] = 1
-	        runScriptFile = os.path.join(scriptDir, '%s_run.sh' % instance.node)
-	        instance.getRemoteRun(runScriptFile)
-	        cpuCores, memLimit = util.getCpuCoresMemLimit(runScriptFile)
-	        if cpuCores != None:
-		    cpuCoresDict[instance.node] = cpuCores
-	        if memLimit != None:
-		    memLimitDict[instance.node] = memLimit
+                runScriptFile = os.path.join(scriptDir, '%s_run.sh' % instance.node)
+                instance.getRemoteRun(runScriptFile)
+                cpuCores, memLimit = util.getCpuCoresMemLimit(runScriptFile)
+                if cpuCores != None:
+                    cpuCoresDict[instance.node] = cpuCores
+                if memLimit != None:
+                    memLimitDict[instance.node] = memLimit
             deployConfig = {}
             instanceConfigs = {}
             for key, value in commonConfigs.items():
@@ -174,10 +174,10 @@ class InitProcessor():
 
 
         for module in ('meta', 'store', 'db'):
-	    for ins in self.deployConfig[module]:
-		node = '%s:%d' % (ins['host'], ins['port'])
-		if node in cpuCoresDict:
-		    ins['cpu_cores'] = cpuCoresDict[node]
-		if node in memLimitDict:
-		    ins['mem_limit'] = memLimitDict[node]
-	
+            for ins in self.deployConfig[module]:
+                node = '%s:%d' % (ins['host'], ins['port'])
+                if node in cpuCoresDict:
+                    ins['cpu_cores'] = cpuCoresDict[node]
+                if node in memLimitDict:
+                    ins['mem_limit'] = memLimitDict[node]
+        

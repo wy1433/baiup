@@ -41,14 +41,14 @@ class StoreProcessor():
             exit(0)
 
     def transferLeader(self):
-	if len(sys.argv) != 5:
-	    print "usage baiup store clustername transfer-leader store_id"
-	    exit(0)
-	self.node = ''
+        if len(sys.argv) != 5:
+            print "usage baiup store clustername transfer-leader store_id"
+            exit(0)
+        self.node = ''
         self.node = sys.argv[4]
 
-	for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, "store"):
-	    if self.node != '' and instance.node != self.node:
-		continue
-	    instance.transferAllLeader()
-	    
+        for instance in Instance.getInstanceListByDeployConfig(self.deployConfig, "store"):
+            if self.node != '' and instance.node != self.node:
+                continue
+            instance.transferAllLeader()
+            

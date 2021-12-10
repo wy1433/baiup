@@ -80,8 +80,8 @@ class DeployProcessor():
     def getPhysicalRoomList(self):
         res = {}
         for store in self.deployConfig['store']:
-	    if 'config' not in store:
-		continue
+            if 'config' not in store:
+                continue
             if '-default_logical_room' not in store['config']:
                 continue
             logicalRoom = store['config']['-default_logical_room']
@@ -96,18 +96,18 @@ class DeployProcessor():
 
     def getResourceTags(self):
         res = {}
-	if 'server_configs' in self.deployConfig:
-	    if 'store' in self.deployConfig['server_configs']:
-	        if '-resource_tag' in self.deployConfig['server_configs']['store']:
-		    res[self.deployConfig['server_configs']['store']['-resource_tag']] = 1
+        if 'server_configs' in self.deployConfig:
+            if 'store' in self.deployConfig['server_configs']:
+                if '-resource_tag' in self.deployConfig['server_configs']['store']:
+                    res[self.deployConfig['server_configs']['store']['-resource_tag']] = 1
         for store in self.deployConfig['store']:
-	    if 'config' not in store:
-		continue
+            if 'config' not in store:
+                continue
             if '-resource_tag' not in store['config']:
                 continue
-	    res[store['config']['-resource_tag']] = 1
-	if len(res) == 0:
-	    res[''] = 1
+            res[store['config']['-resource_tag']] = 1
+        if len(res) == 0:
+            res[''] = 1
         return res.keys()
 
     def deploy(self):
@@ -116,7 +116,7 @@ class DeployProcessor():
         ServerConfig.initServerConfig(self.deployConfig, configDir)
 
         self.physicalRooms = self.getPhysicalRoomList()
-	self.resourceTags = self.getResourceTags()
+        self.resourceTags = self.getResourceTags()
         self.metaList = DeployConfig.getMetaList(self.deployConfig)
         self.metaClient = MetaClient(','.join(self.metaList))
         for module in ('meta', 'store', 'db'):
@@ -124,9 +124,9 @@ class DeployProcessor():
             scriptDir = os.path.join(CLUSTER_DIR, self.clusterName, "cache-conf")
             for instance in instanceList:
                 print instance.node, "init"
-		if instance.check():
-		    print "instance %s has been inited!" % instance.node
-		    continue
+                if instance.check():
+                    print "instance %s has been inited!" % instance.node
+                    continue
                 instance.makeRemoteDir()
 
                 instance.updateRemoteBin()
@@ -136,9 +136,9 @@ class DeployProcessor():
 
 
             for instance in instanceList:
-		if instance.check():
-		    print "instance %s has been started!" % instance.node
-		    continue
+                if instance.check():
+                    print "instance %s has been started!" % instance.node
+                    continue
                 instance.start()
                 time.sleep(2)
                 if instance.check():
@@ -146,21 +146,21 @@ class DeployProcessor():
                 else:
                     print "start %s faild" % (instance.node)
                     exit(1)
-	    if module == 'meta':
-		self.initMeta()
+            if module == 'meta':
+                self.initMeta()
             
-	    if module == 'store':
-		self.initDB()
+            if module == 'store':
+                self.initDB()
                 
 
     def initDB(self):
-	self.metaClient.createNamespace("INTERNAL")
-	self.metaClient.createDatabase("INTERNAL", "baikaldb")
-	interTableInfo = {
-	    "table_name": "__baikaldb_instance",
-	    "resource_tag": self.resourceTags[0],
-	    "fields": [ 
-		{
+        self.metaClient.createNamespace("INTERNAL")
+        self.metaClient.createDatabase("INTERNAL", "baikaldb")
+        interTableInfo = {
+            "table_name": "__baikaldb_instance",
+            "resource_tag": self.resourceTags[0],
+            "fields": [ 
+                {
                     "field_name" : "instance_id",
                     "mysql_type" : "UINT64",
                     "auto_increment" : True
@@ -173,9 +173,9 @@ class DeployProcessor():
                     "field_names": ["instance_id"]
                 }
             ]
-	}
-	self.metaClient.createTable("INTERNAL","baikaldb", interTableInfo)
-	
+        }
+        self.metaClient.createTable("INTERNAL","baikaldb", interTableInfo)
+        
 
     def initMeta(self):
         # init meta
@@ -183,7 +183,7 @@ class DeployProcessor():
         if len(self.physicalRooms) == 0:
             self.metaClient.addLogicalRoom(['default'])
             self.metaClient.addPhysicalRoom('default',['default'])
-	    return
+            return
         logicalRoomList = self.physicalRooms.keys()
             
         self.metaClient.addLogicalRoom(logicalRoomList)

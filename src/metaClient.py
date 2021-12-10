@@ -172,35 +172,35 @@ class MetaClient:
 
 
     def addLogicalRoom(self, logicalRoomList):
-	data = '''{
-	    "op_type": "OP_ADD_LOGICAL",
-	    "logical_rooms": {
-		"logical_rooms" : %s
-	    }
-	}''' % json.dumps(logicalRoomList, ensure_ascii = False)
-	res, errMsg = self.post('/MetaService/meta_manager', data)
+        data = '''{
+            "op_type": "OP_ADD_LOGICAL",
+            "logical_rooms": {
+                "logical_rooms" : %s
+            }
+        }''' % json.dumps(logicalRoomList, ensure_ascii = False)
+        res, errMsg = self.post('/MetaService/meta_manager', data)
         try:
             jsres = json.loads(res)
-	    return jsres['errcode'] == 'SUCCESS'
+            return jsres['errcode'] == 'SUCCESS'
         except Exception,e:
             return False
 
     def addPhysicalRoom(self, logicalRoom, physicalRoomList):
-	data = '''{
-	    "op_type": "OP_ADD_PHYSICAL",
-	    "physical_rooms": {
-		"logical_room" : "%s",
-		"physical_rooms": %s
-	    }
-	}''' % (logicalRoom, json.dumps(physicalRoomList, ensure_ascii = False))
-	res, errMsg = self.post('/MetaService/meta_manager', data)
+        data = '''{
+            "op_type": "OP_ADD_PHYSICAL",
+            "physical_rooms": {
+                "logical_room" : "%s",
+                "physical_rooms": %s
+            }
+        }''' % (logicalRoom, json.dumps(physicalRoomList, ensure_ascii = False))
+        res, errMsg = self.post('/MetaService/meta_manager', data)
         try:
             jsres = json.loads(res)
-	    return jsres['errcode'] == 'SUCCESS'
+            return jsres['errcode'] == 'SUCCESS'
         except Exception,e:
             return False
-	
-	
+        
+        
         
     def transferMetaLeader(self, oldLeader):
         for rid in (0,1,2):
@@ -284,32 +284,32 @@ class MetaClient:
             return []
 
     def createNamespace(self, ns):
-	data = '{"op_type":"OP_CREATE_NAMESPACE","namespace_info":{"namespace_name": "%s","quota": 1048576}}' % ns
-	res, errMsg = self.post("MetaService/meta_manager", data)
-	try:
-	    jsres = json.loads(res)
-	    return jsres['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    return False
+        data = '{"op_type":"OP_CREATE_NAMESPACE","namespace_info":{"namespace_name": "%s","quota": 1048576}}' % ns
+        res, errMsg = self.post("MetaService/meta_manager", data)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == 'SUCCESS'
+        except Exception, e:
+            return False
 
     def createDatabase(self, ns, db):
-	data = '{"op_type":"OP_CREATE_DATABASE","database_info":{"namespace_name": "%s","quota": 1048576, "database":"%s"}}' % (ns, db)
-	res, errMsg = self.post("MetaService/meta_manager", data)
-	try:
-	    jsres = json.loads(res)
-	    return jsres['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    return False
+        data = '{"op_type":"OP_CREATE_DATABASE","database_info":{"namespace_name": "%s","quota": 1048576, "database":"%s"}}' % (ns, db)
+        res, errMsg = self.post("MetaService/meta_manager", data)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == 'SUCCESS'
+        except Exception, e:
+            return False
 
     def createTable(self, ns, db, tableInfo):
-	data = '{"op_type":"OP_CREATE_TABLE","table_info":{"namespace_name": "%s","resource_tag": "%s", "database":"%s", "table_name":"%s", "fields":%s, "indexs":%s}}' % (ns, tableInfo['resource_tag'], db, tableInfo['table_name'], json.dumps(tableInfo['fields']), json.dumps(tableInfo['indexs']))
-	res, errMsg = self.post("MetaService/meta_manager", data)
-	try:
-	    jsres = json.loads(res)
-	    return jsres['errcode'] == 'SUCCESS'
-	except Exception, e:
-	    print str(e)
-	    return False
+        data = '{"op_type":"OP_CREATE_TABLE","table_info":{"namespace_name": "%s","resource_tag": "%s", "database":"%s", "table_name":"%s", "fields":%s, "indexs":%s}}' % (ns, tableInfo['resource_tag'], db, tableInfo['table_name'], json.dumps(tableInfo['fields']), json.dumps(tableInfo['indexs']))
+        res, errMsg = self.post("MetaService/meta_manager", data)
+        try:
+            jsres = json.loads(res)
+            return jsres['errcode'] == 'SUCCESS'
+        except Exception, e:
+            print str(e)
+            return False
 
     def getUserPrivileges(self):
         data = '{"op_type":"QUERY_USERPRIVILEG"}'

@@ -21,13 +21,13 @@ class Instance():
         self.subPath = self.path.split('/')[-1]
         self.version = version
         self.config = {}
-	self.cpuCores = '0-255'
-	self.memLimit = 512 * 1024 * 1024
+        self.cpuCores = '0-255'
+        self.memLimit = 512 * 1024 * 1024
         self.node = "%s:%d" % (self.host, self.port)
         if self.type == 'store':
             self.storeInteract = StoreInteract(self.host, self.port)
-	self.metaList = metaList
-	self.metaClient = MetaClient(','.join(self.metaList))
+        self.metaList = metaList
+        self.metaClient = MetaClient(','.join(self.metaList))
 
 
     def setConfig(self, config):
@@ -44,9 +44,9 @@ class Instance():
         stopData = open(stopTplPath).read().replace('__REP_PATH__REP__', self.subPath)
         runData = open(os.path.join(tplDir, self.type, "run")).read()
 
-	#run增加cpu cores和mem limit
-	runData = runData.replace('__CPU_CORES_LIST__', self.cpuCores)
-	runData = runData.replace('__MEM_LIMIT__', str(self.memLimit))
+        #run增加cpu cores和mem limit
+        runData = runData.replace('__CPU_CORES_LIST__', self.cpuCores)
+        runData = runData.replace('__MEM_LIMIT__', str(self.memLimit))
 
         
         nodeRestartFile = os.path.join(dirName, "restart_%s.sh" % self.node)
@@ -59,7 +59,7 @@ class Instance():
         open(nodeRunFile, 'w').write(runData)
         os.chmod(nodeRunFile, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
 
-	
+        
 
         if self.type == 'db':
             nodeDummyPortFile = os.path.join(dirName, 'dummy_server_%s.port' % self.node)
@@ -139,16 +139,16 @@ class Instance():
         return len(rlist)
         
     def transferMetaLeader(self):
-	print "transferMetaLeader:"
-	self.metaClient.transferMetaLeader(self.node)
+        print "transferMetaLeader:"
+        self.metaClient.transferMetaLeader(self.node)
 
     def start(self):
         if self.type == 'store' and self.check():
             self.transferAllLeader()
 
-	if self.type == 'meta' and self.check():
-	    self.transferMetaLeader()
-	    time.sleep(10)
+        if self.type == 'meta' and self.check():
+            self.transferMetaLeader()
+            time.sleep(10)
         cmd = "cd %s && bash restart_by_supervise.sh" % self.path
         sys.stdout.write("%s begin start!\r" % self.node)
         sys.stdout.flush()
@@ -186,9 +186,9 @@ class Instance():
     def stop(self):
         if self.type == 'store':
             self.transferAllLeader()
-	if self.type == 'meta' and self.check():
-	    self.transferMetaLeader()
-	    time.sleep(10)
+        if self.type == 'meta' and self.check():
+            self.transferMetaLeader()
+            time.sleep(10)
         cmd = "cd %s && bash stop.sh" % self.path
         sys.stdout.write("stop instance %s\r" % self.node)
         sys.stdout.flush()
@@ -257,10 +257,10 @@ class Instance():
         version = deployConfig['global']['version']
         if module != None:
             moduleList = [module]
-	metaList = []
-	for ins in deployConfig['meta']:
-	    tmpNode = '%s:%s' % (ins['host'], ins['port'])
-	    metaList.append(tmpNode)
+        metaList = []
+        for ins in deployConfig['meta']:
+            tmpNode = '%s:%s' % (ins['host'], ins['port'])
+            metaList.append(tmpNode)
         for module in moduleList:
             for ins in deployConfig[module]:
                 host = ins['host']
@@ -270,10 +270,10 @@ class Instance():
                 else:
                     path = util.getDefaultPath(module, port)
                 instance = Instance(host, port, clusterName, module, version, os.path.join(rootDir, path), metaList)
-		if 'mem_limit' in ins:
-		    instance.memLimit = ins['mem_limit']
-		if 'cpu_cores' in ins:
-		    instance.cpuCores = ins['cpu_cores']
+                if 'mem_limit' in ins:
+                    instance.memLimit = ins['mem_limit']
+                if 'cpu_cores' in ins:
+                    instance.cpuCores = ins['cpu_cores']
                 if 'config' in ins:
                     instance.config = ins['config']
                 if instance.node == node:

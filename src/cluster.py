@@ -9,6 +9,7 @@ import subprocess
 from deployConfig import DeployConfig
 import util
 from common import CLUSTER_DIR
+from tabulate import tabulate
 
 class ClusterProcessor():
     def __init__(self):
@@ -21,10 +22,11 @@ class ClusterProcessor():
             self.usage()
             exit(0)
         clusterDir = CLUSTER_DIR
-        print "clustername\t\tversion\t\t\tmeta"
+        rows = []
         for cluster in os.listdir(clusterDir):
             deployConfig = DeployConfig.loadClusterDeployConfig(cluster)
             metaList = DeployConfig.getMetaList(deployConfig)
             version = deployConfig['global']['version']
             wor = cluster + '\t\t\t' + version + '\t\t' + ','.join(metaList)
-            print wor
+            rows.append([cluster, version, ','.join(metaList)])
+        print tabulate(rows, headers = ['cluster','version','meta'])
