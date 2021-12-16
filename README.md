@@ -6,7 +6,8 @@
 一、安装baiup
 ===
 
-1. 机器准备
+机器准备
+-------
 Ansible需要安装在一台发布机上，通过建立信任关系，对多台部署机进行远程部署。
 
 |部署组件  |	主机IP   |
@@ -17,20 +18,23 @@ Ansible需要安装在一台发布机上，通过建立信任关系，对多台�
 |db	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
 
 
-2. 环境准备
+环境准备
+-------
 
 A. 配置免密登录
-参考[配置免密关系](https://github.com/baidu/BaikalDB/wiki/Ansible-for-BaikalDB#4-%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB)
+参考[配置免密关系](https://github.com/baidu/BaikalDB/wiki/Ansible-for-BaikalDB#4-%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB)<br/>
 B. 部署机器安装supervise。
 
 
-3. 安装依赖
+安装依赖
+-------
 ```
 #中控机执行
 pip install paramiko
 ```
 
-4. 安装baiup
+安装baiup
+-------
 ```
 git clone https://github.com/baikalgroup/BaikalDB-Migrate
 cd BaikalDB-Migrate
