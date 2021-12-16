@@ -1,6 +1,11 @@
 安装与使用
 ===
-安装
+安装依赖
+```
+pip install paramiko
+```
+
+安装baiup
 ```
 bash install.sh
 ```
