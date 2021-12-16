@@ -38,7 +38,6 @@ cp -r baiup ~/.baiup
 echo "export PATH" >> ~/.bash_profile
 echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
-
 ```
 
 
