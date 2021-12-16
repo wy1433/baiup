@@ -14,10 +14,10 @@ bash install.sh
 使用注意事项
 
 1. baiup部署机器需要能够免密登录到baikaldb部署集群
-   参考：https://www.google.com/search?q=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&rlz=1C5CHFA_enKR947KR947&oq=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&aqs=chrome..69i57j0i12i512l3.5237j0j7&sourceid=chrome&ie=UTF-8
+   参考：[如何配置免密登录](https://www.google.com/search?q=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&rlz=1C5CHFA_enKR947KR947&oq=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&aqs=chrome..69i57j0i12i512l3.5237j0j7&sourceid=chrome&ie=UTF-8)
 
 2. baikaldb部署机器均需要安装supervice命令
-   参考： https://www.google.com/search?q=linux%E5%AE%89%E8%A3%85supervise&rlz=1C5CHFA_enKR947KR947&sxsrf=AOaemvIoFyDtZFRxYHU2AsWAFTFPqnfSjQ%3A1639646518813&ei=NgW7YYyDMYOpoAS-_pzIBg&ved=0ahUKEwiM9r2i_-f0AhWDFIgKHT4_B2kQ4dUDCA4&uact=5&oq=linux%E5%AE%89%E8%A3%85supervise&gs_lcp=Cgdnd3Mtd2l6EAMyBAgAEA06BwgAEEcQsAM6BAgjECc6BAgAEEM6CwguEIAEEMcBENEDOgUIABCABDoFCC4QgAQ6CwguEIAEEMcBEKMCOgoILhDHARDRAxBDOgUIABDLAToLCC4QxwEQ0QMQywE6BwgAEIAEEAxKBAhBGABKBAhGGABQ10xYq21gpXFoFnAAeACAAZICiAGBJ5IBBDItMjKYAQCgAQHIAQHAAQE&sclient=gws-wiz
+   参考： [如何安装supervise命令](https://www.google.com/search?q=linux%E5%AE%89%E8%A3%85supervise&rlz=1C5CHFA_enKR947KR947&sxsrf=AOaemvIoFyDtZFRxYHU2AsWAFTFPqnfSjQ%3A1639646518813&ei=NgW7YYyDMYOpoAS-_pzIBg&ved=0ahUKEwiM9r2i_-f0AhWDFIgKHT4_B2kQ4dUDCA4&uact=5&oq=linux%E5%AE%89%E8%A3%85supervise&gs_lcp=Cgdnd3Mtd2l6EAMyBAgAEA06BwgAEEcQsAM6BAgjECc6BAgAEEM6CwguEIAEEMcBENEDOgUIABCABDoFCC4QgAQ6CwguEIAEEMcBEKMCOgoILhDHARDRAxBDOgUIABDLAToLCC4QxwEQ0QMQywE6BwgAEIAEEAxKBAhBGABKBAhGGABQ10xYq21gpXFoFnAAeACAAZICiAGBJ5IBBDItMjKYAQCgAQHIAQHAAQE&sclient=gws-wiz)
 
 
 
