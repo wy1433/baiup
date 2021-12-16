@@ -1,4 +1,7 @@
-## baiup
+## 安装baiup
+```
+bash install.sh
+```
 
 ### 部署集群
 
