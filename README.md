@@ -9,12 +9,12 @@
 1. 机器准备
 Ansible需要安装在一台发布机上，通过建立信任关系，对多台部署机进行远程部署。
 
-|部署组件	主机IP
-  ---           ---
-|baiup	|       xx.xx.xx.153
-|Meta	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
-|Store	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
-|db	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
+|部署组件  |	主机IP   |
+|  ---     |         --- |
+|baiup	   |       xx.xx.xx.153|
+|Meta	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
+|Store	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
+|db	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
 
 
 2. 环境准备
