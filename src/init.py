@@ -103,16 +103,16 @@ class InitProcessor():
 
         metaList = DeployConfig.getMetaList(self.deployConfig)
         metaClient = MetaClient(",".join(metaList))
-        storeList = metaClient.getInstanceList()
-        self.deployConfig['store'] = []
-        for store in storeList:
-            s = {"host":str(store.split(':')[0]), "port":int(store.split(':')[1])}
-            self.deployConfig['store'].append(s)
+        #storeList = metaClient.getInstanceList()
+        #self.deployConfig['store'] = []
+        #for store in storeList:
+        #    s = {"host":str(store.split(':')[0]), "port":int(store.split(':')[1])}
+        #    self.deployConfig['store'].append(s)
 
-        msg = self.checkConfig()
-        if msg != None:
-            print msg
-            exit(0)
+        #msg = self.checkConfig()
+        #if msg != None:
+        #    print msg
+        #    exit(0)
 
         cpuCoresDict = {}
         memLimitDict = {}

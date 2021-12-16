@@ -21,7 +21,7 @@ class DeployProcessor():
         pass
 
     def usage(self):
-        print "usage python deploy.py deploy clustername version config.yaml"
+        print "usage python baiup deploy clustername version config.yaml"
         
     def init(self):
         if len(sys.argv) != 5:
