@@ -1,32 +1,53 @@
-安装与使用
+使用baiup部署baikaldb
 ===
-安装依赖
+
+
+
+一、安装baiup
+===
+
+1. 机器准备
+Ansible需要安装在一台发布机上，通过建立信任关系，对多台部署机进行远程部署。
+
+|部署组件	主机IP
+  ---           ---
+|baiup	|       xx.xx.xx.153
+|Meta	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
+|Store	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
+|db	|       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156
+
+
+2. 环境准备
+
+A. 配置免密登录
+参考[配置免密关系](https://github.com/baidu/BaikalDB/wiki/Ansible-for-BaikalDB#4-%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB)
+B. 部署机器安装supervise。
+
+
+3. 安装依赖
 ```
+#中控机执行
 pip install paramiko
 ```
 
-安装baiup
+4. 安装baiup
 ```
-bash install.sh
+git clone https://github.com/baikalgroup/BaikalDB-Migrate
+cd BaikalDB-Migrate
+cp -r baiup ~/.baiup
+echo "export PATH" >> ~/.bash_profile
+echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
+source ~/.bash_profile
+
 ```
 
-使用注意事项
-
-1. baiup部署机器需要能够免密登录到baikaldb部署集群
-   参考：[如何配置免密登录](https://www.google.com/search?q=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&rlz=1C5CHFA_enKR947KR947&oq=linux%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95&aqs=chrome..69i57j0i12i512l3.5237j0j7&sourceid=chrome&ie=UTF-8)
-
-2. baikaldb部署机器均需要安装supervice命令
-   参考： [如何安装supervise命令](https://www.google.com/search?q=linux%E5%AE%89%E8%A3%85supervise&rlz=1C5CHFA_enKR947KR947&sxsrf=AOaemvIoFyDtZFRxYHU2AsWAFTFPqnfSjQ%3A1639646518813&ei=NgW7YYyDMYOpoAS-_pzIBg&ved=0ahUKEwiM9r2i_-f0AhWDFIgKHT4_B2kQ4dUDCA4&uact=5&oq=linux%E5%AE%89%E8%A3%85supervise&gs_lcp=Cgdnd3Mtd2l6EAMyBAgAEA06BwgAEEcQsAM6BAgjECc6BAgAEEM6CwguEIAEEMcBENEDOgUIABCABDoFCC4QgAQ6CwguEIAEEMcBEKMCOgoILhDHARDRAxBDOgUIABDLAToLCC4QxwEQ0QMQywE6BwgAEIAEEAxKBAhBGABKBAhGGABQ10xYq21gpXFoFnAAeACAAZICiAGBJ5IBBDItMjKYAQCgAQHIAQHAAQE&sclient=gws-wiz)
 
 
-
-
-
-一、部署
+二、部署baikaldb
 ===
 
 ```
-baiup deploy clustername version deploy.yaml
+baiup deploy clustername v2.0.1 deploy.yaml
 ```
 
 
@@ -34,7 +55,7 @@ deploy.yaml文件格式如下：
 
 ```
 global:
-  version: v1.0.0.1
+  version: v2.0.1
  
  
 #公共配置
@@ -80,7 +101,7 @@ store:
 ```
 
 
-二、查看状态
+三、查看状态
 ===
 
 ```
@@ -101,14 +122,14 @@ baiup display clustername resource_tag=tag1
 
 
 
-三、缩容
+四、缩容
 ===
 ```
 baiup scale-in clustername 1.1.1.1:8112
 ```
 
 
-四、扩容
+五、扩容
 ===
 ```
 baiup scale-out clustername scale-out.yaml
@@ -125,7 +146,7 @@ store:
 ```
 
 
-五、升级
+六、升级
 ===
 ```
 baiup upgrade clustername version
@@ -147,7 +168,7 @@ baiup upgrade clustername version resource_tag=tag1
 ```
 
 
-六、修改配置
+七、修改配置
 ===
 ```
 baiup edit-config clustername
@@ -156,7 +177,7 @@ baiup edit-config clustername
 
 
 
-七、启动停止
+八、启动停止
 ===
 根据实例
 ```
@@ -183,7 +204,7 @@ baiup stop cluster resource_tag=tag2
 ```
 
 
-八、添加维护集群
+九、添加维护集群
 ===
 添加现有集群到baiup
 ```
@@ -219,14 +240,14 @@ store: #store列表，只需host, port, path
 
 
 
-九、查看现有集群
+十、查看现有集群
 ===
 ```
 baiup cluster
 ```
 
 
-十、region相关命令
+十一、region相关命令
 ===
 
 查询所有region：  
@@ -291,7 +312,7 @@ baiup region clustername peer-count store_id
 baiup region clustername peer-count=3 [store_addr|resource_tag=tagx]
 ```
 
-十一、meta相关命令
+十二、meta相关命令
 ===
 
 关闭负载均衡： 
@@ -324,7 +345,7 @@ baiup meta clustername transfer-leader ip:port  #从此节点将leader迁走,若
 ```
 
 
-十二、连接数据库
+十三、连接数据库
 ===
 连接到某个库
 ```

@@ -95,10 +95,13 @@ class ServerConfig():
     @staticmethod
     def loadPkgServerConfig(version):
         serverConfig = {}
+        configPath = os.path.join(REPO_DIR, version, "conf")
+        if not os.path.exists(configPath):
+            print configPath
+            print "package %s has not config" % version
+            exit(1)
         for module in ('db','meta','store'):
-	    dirName = BIN_NAME_DICT[module]
-            configPath = os.path.join(REPO_DIR, version, dirName, "conf")
-            subConfigFile = os.path.join(configPath, "gflags.conf")
+            subConfigFile = os.path.join(configPath, module + ".conf")
             if not os.path.exists(subConfigFile):
                 continue
             subConfig = ServerConfig.load(subConfigFile)

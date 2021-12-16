@@ -201,7 +201,7 @@ class DeployProcessor():
 	if not pkg.is_local():
 	    pkg.download()
         for binName in ('baikaldb', 'baikalMeta', 'baikalStore'):
-	    binPath = os.path.join(REPO_DIR, self.version, binName, "bin")
+	    binPath = os.path.join(REPO_DIR, self.version, "bin")
             binFile = os.path.join(binPath, binName)
             if not os.path.exists(binFile):
                 return self.version + "'s " + binName + " not found!"

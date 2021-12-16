@@ -1,6 +1,7 @@
 #-*- coding:utf8 -*-
 from common import *
 import tarfile
+import shutil
 import os
 import urllib
 import urllib2
@@ -35,8 +36,9 @@ class Package():
 	print "download package %s success" % self.version
 
 	#解压
-	tmpPackageDir = os.path.join(tmpDir, self.version)
-	os.removedirs(tmpPackageDir)
+	tmpPackageDir = os.path.join(tmpDir, self.version + ".tmp")
+	if os.path.exists(tmpPackageDir):
+	    shutil.rmtree(tmpPackageDir)
 	os.makedirs(tmpPackageDir)
 	tarobj = tarfile.open(localFile, "r:gz")
 	for tarinfo in tarobj:
@@ -46,7 +48,20 @@ class Package():
 
 	repoDir = os.path.join(REPO_DIR, self.version)
 	os.makedirs(repoDir)
-	os.rename(tmpPackageDir, repoDir)
+	#拷贝
+	tmpVersionDir = os.path.join(tmpDir, self.version)
+	os.system('rm -rf %s' % tmpVersionDir)
+	binDir = os.path.join(tmpVersionDir,"bin")
+	confDir = os.path.join(tmpVersionDir,"conf")
+	os.makedirs(binDir)
+	os.makedirs(confDir)
+	shutil.copy(os.path.join(tmpPackageDir,'baikaldb/bin/baikaldb'), binDir)
+	shutil.copy(os.path.join(tmpPackageDir,'baikalMeta/bin/baikalMeta'), binDir)
+	shutil.copy(os.path.join(tmpPackageDir,'baikalStore/bin/baikalStore'), binDir)
+	shutil.copy(os.path.join(tmpPackageDir,'baikaldb/conf/gflags.conf'), os.path.join(confDir,'db.conf'))
+	shutil.copy(os.path.join(tmpPackageDir,'baikalMeta/conf/gflags.conf'), os.path.join(confDir,'meta.conf'))
+	shutil.copy(os.path.join(tmpPackageDir,'baikalStore/conf/gflags.conf'), os.path.join(confDir,'store.conf'))
+	os.rename(tmpVersionDir, repoDir)
 
 
 if __name__ == '__main__':

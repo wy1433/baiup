@@ -110,13 +110,12 @@ class Instance():
         util.execSSHCommand(self.host, cmd)
 
     def updateRemoteBin(self):
-	binName = BIN_NAME_DICT[self.type]
-        localbin = os.path.join(REPO_DIR, self.version, binName, "bin", binName)
-        cmd = "rm -f %s" % os.path.join(self.path, "bin", binName + ".tmp")
+        localbin = os.path.join(REPO_DIR, self.version, "bin", BIN_NAME_DICT[self.type])
+        cmd = "rm -f %s" % os.path.join(self.path, "bin", BIN_NAME_DICT[self.type] + ".tmp")
         util.execSSHCommand(self.host, cmd)
-        if not util.execScpRemoteCommand(self.host, localbin, os.path.join(self.path, "bin", binName + ".tmp")):
+        if not util.execScpRemoteCommand(self.host, localbin, os.path.join(self.path, "bin", BIN_NAME_DICT[self.type] + ".tmp")):
             exit(1)
-        cmd = "cd %s && cp -f bin/%s.tmp bin/%s" % (self.path, binName, binName)
+        cmd = "cd %s && cp -f bin/%s.tmp bin/%s" % (self.path, BIN_NAME_DICT[self.type], BIN_NAME_DICT[self.type])
         util.execSSHCommand(self.host, cmd)
 
     def updateRemoteConfig(self, fileName):
