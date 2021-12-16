@@ -1,4 +1,5 @@
-#安装baiup 
+安装baiup 
+===
 bash install.sh
 
 
