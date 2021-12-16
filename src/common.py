@@ -1,8 +1,10 @@
 #!/usr/bin/python
 #-*- coding:utf8 -*-
 
-LOCAL_CACHE_DIR="/home/work/tools/baiup/storage/oplist"
-LOCAL_SCRIPT_DIR="/home/work/tools/baiup/script"
-REPO_DIR="/home/work/tools/baiup/repo"
+import os
+LOCAL_ROOT_DIR="/home/work/user/yuzhong.chen/baiup"
+LOCAL_CACHE_DIR=LOCAL_ROOT_DIR + "/storage/oplist"
+LOCAL_SCRIPT_DIR=LOCAL_ROOT_DIR + "/script"
+REPO_DIR=LOCAL_ROOT_DIR + "/repo"
 BIN_NAME_DICT={"db":"baikaldb","meta":"baikalMeta","store":"baikalStore"}
-CLUSTER_DIR="/home/work/tools/baiup/storage/clusters"
+CLUSTER_DIR=LOCAL_ROOT_DIR + "/storage/clusters"
