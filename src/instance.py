@@ -184,11 +184,6 @@ class Instance():
                 self.storeInteract.quitLeader(reg['region_id'])
         
     def stop(self):
-        if self.type == 'store':
-            self.transferAllLeader()
-        if self.type == 'meta' and self.check():
-            self.transferMetaLeader()
-            time.sleep(10)
         cmd = "cd %s && bash stop.sh" % self.path
         sys.stdout.write("stop instance %s\r" % self.node)
         sys.stdout.flush()

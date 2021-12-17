@@ -91,6 +91,10 @@ class ScaleInProcessor():
                 confirm = raw_input("确定要下线\033[1;31m %s \033[0m 节点\033[1;32m %s \033[0m 吗？(y/n):" % (scaleInType, key))
                 if confirm.strip().lower() != 'y':
                     exit(0)
+            if instance.type == 'store':
+                instance.transferAllLeader()
+            if instance.type == 'meta' and instance.check():
+                instance.transferMetaLeader()
             instance.stop()
             time.sleep(2)
             if instance.check():
