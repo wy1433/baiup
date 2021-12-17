@@ -36,8 +36,8 @@ pip install paramiko
 安装baiup
 -------
 ```
-git clone https://github.com/baikalgroup/BaikalDB-Migrate
-cd BaikalDB-Migrate
+git clone https://github.com/baikalgroup/baiup
+cd baiup
 cp -r baiup ~/.baiup
 echo "export PATH" >> ~/.bash_profile
 echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
