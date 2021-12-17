@@ -111,10 +111,11 @@ baiup display clustername db
 baiup display clustername resource_tag=tag1
 ```
 
-# 探索更多
-至此，你已经完成了使用baiup部署baikaldb集群；
-后续，在日常运维中，你可能还需要使用以下更多功能，欢迎一起使用与完善：
+> 至此，恭喜你完成了baikaldb集群的部署！
+>
+> 后续，你可能还需要更多功能，欢迎一起使用与完善。
 
+# 探索更多
 ## 启动、停止集群
 根据实例
 ```
