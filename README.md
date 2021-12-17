@@ -1,66 +1,47 @@
-使用baiup部署baikaldb
-===
+# 使用baiup部署baikaldb集群
+
+baiup是baikaldb集群运维管理工具，提供部署、启动、关闭、升级，配置、扩缩容、集群状态、集群管理、集群运维命令、数据库连接等功能。
+
+## 第1步：软硬件环境准备
+
+* **机器准备**
+    
+    baiup需要安装在一台发布机上，通过建立信任关系，对多台部署机进行远程部署。
+
+    |部署组件  |	主机IP   |
+    |  ---     |         --- |
+    |baiup	   |       192.168.1.4|
+    |Meta	   |       192.168.1.1, 192.168.1.2, 192.168.1.3|
+    |Store	   |       192.168.1.1, 192.168.1.2, 192.168.1.3|
+    |db	       |       192.168.1.1, 192.168.1.2, 192.168.1.3|
 
 
+* **环境准备**
 
-一、安装baiup
-===
-
-机器准备
--------
-baiup需要安装在一台发布机上，通过建立信任关系，对多台部署机进行远程部署。
-
-|部署组件  |	主机IP   |
-|  ---     |         --- |
-|baiup	   |       xx.xx.xx.153|
-|Meta	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
-|Store	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
-|db	   |       xx.xx.xx.99, xx.xx.xx.136, xx.xx.xx.156|
+    * 配置免密登录（中控机到baikaldb集群机器）
+    参考[配置免密关系](https://github.com/baidu/BaikalDB/wiki/Ansible-for-BaikalDB#4-%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB)<br/>
+    * 在中控机安装baiup依赖： ``` pip install paramiko #中控机执行 ```
+    * 在baikaldb机器安装服务守护工具：supervise
 
 
-环境准备
--------
+## 第2步：在中控机器上安装baiup
 
-A. 配置免密登录
-参考[配置免密关系](https://github.com/baidu/BaikalDB/wiki/Ansible-for-BaikalDB#4-%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB)<br/>
-B. 部署机器安装supervise。
-
-
-安装依赖
--------
-```
-#中控机执行
-pip install paramiko
-```
-
-安装baiup
--------
 ```
 git clone https://github.com/baikalgroup/baiup
-cd baiup
-cp -r baiup ~/.baiup
+mv baiup ~/.baiup
 echo "export PATH" >> ~/.bash_profile
 echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+## 第3步：编写集群拓扑文件
+根据集群部署拓扑，编辑baiup所需的集群初始化配置文件，YAML格式。
 
-
-二、部署baikaldb
-===
-
-```
-baiup deploy clustername v2.0.1 deploy.yaml
-```
-
-
-deploy.yaml文件格式如下：
+deploy.yaml文件实例如下：
 
 ```
 global:
   version: v2.0.1
- 
- 
 #公共配置
 server_config:
   meta:
@@ -69,8 +50,6 @@ server_config:
     raft_max_election_delay_ms: 100
   db:
     default_2pc: true
- 
- 
 meta:
 - host: 1.1.1.1
   port: 8010
@@ -78,24 +57,16 @@ meta:
   config:
     #实例独有的配置写这里
     raft_max_election_delay_ms: 100
-    ...
- 
- 
+    # ...
 - host: 1.1.1.2
   port: 8010
   path: meta
- 
- 
 db:
 - host: 1.1.1.1
   port: 28282
   path: db
   config:
     default_2pc: false
- 
- 
- 
- 
 store:
 - host: 1.1.1.1
   port: 8110
@@ -103,13 +74,32 @@ store:
 #  cpu_cores: 8-15   # 绑定的cpu
 ```
 
+## 第4步：执行部署命令
 
-三、查看状态
-===
+```
+baiup deploy clustername v2.0.1 deploy.yaml
+```
+
+## 第5步：查看baiup管理的集群列表
+```
+baiup cluster
+```
+
+## 第6步：查看部署的集群状态
 
 ```
 #查看整个集群的状态
 baiup display clustername  
+# 输出如下代表集群正常启动：
+192.168.1.1:8010	meta		113d	 UP !
+192.168.1.2:8010	meta		112d	 UP !
+192.168.1.3:8010	meta		161d	 UP !
+192.168.1.1:8110	store		112d	 NORMAL !	4356
+192.168.1.2:8110	store		112d	 NORMAL !	4354
+192.168.1.3:8110	store		112d	 NORMAL !	4348
+192.168.1.1:28282	db		    113d	 UP !
+192.168.1.2:28282	db		    113d	 UP !
+192.168.1.3:28282	db		    112d	 UP !
 
 #查看某个实例的状态
 baiup display clustername 1.1.1.2:8110
@@ -121,67 +111,11 @@ baiup display clustername db
 baiup display clustername resource_tag=tag1
 ```
 
+# 探索更多
+至此，你已经完成了使用baiup部署baikaldb集群；
+后续，在日常运维中，你可能还需要使用以下更多功能，欢迎一起使用与完善：
 
-
-
-
-四、缩容
-===
-```
-baiup scale-in clustername 1.1.1.1:8112
-```
-
-
-五、扩容
-===
-```
-baiup scale-out clustername scale-out.yaml
-```
-
-scale-out.yaml文件格式如下， 基本同deploy.yaml
-```
-store:
-- host: 1.1.1.1
-  port: 8117
-  path: store7
-  config:
-    xx: xx
-```
-
-
-六、升级
-===
-```
-baiup upgrade clustername version
-```
-单节点升级为：
-```
-baiup upgrade clustername version ip:port
-```
-
-按照组件升级
-```
-baiup upgrade clustername version  db|meta|store
-```
-
-
-按照resource_tag升级
-```
-baiup upgrade clustername version resource_tag=tag1
-```
-
-
-七、修改配置
-===
-```
-baiup edit-config clustername
-```
-命令会打开编辑配置文件， 修改后保存。
-
-
-
-八、启动停止
-===
+## 启动、停止集群
 根据实例
 ```
 baiup start clustername ip:port
@@ -206,9 +140,56 @@ baiup start cluster resource_tag=tag1
 baiup stop cluster resource_tag=tag2
 ```
 
+## 缩容
 
-九、添加维护集群
-===
+```
+baiup scale-in clustername 1.1.1.1:8112
+```
+
+## 扩容
+```
+baiup scale-out clustername scale-out.yaml
+```
+
+scale-out.yaml文件格式如下， 基本同deploy.yaml
+```
+store:
+- host: 1.1.1.1
+  port: 8117
+  path: store7
+  config:
+    xx: xx
+```
+
+
+## 升级
+```
+baiup upgrade clustername version
+```
+单节点升级为：
+```
+baiup upgrade clustername version ip:port
+```
+
+按照组件升级
+```
+baiup upgrade clustername version  db|meta|store
+```
+
+
+按照resource_tag升级
+```
+baiup upgrade clustername version resource_tag=tag1
+```
+
+## 修改配置
+```
+baiup edit-config clustername
+```
+命令会打开编辑配置文件， 修改后保存。
+
+
+## 添加维护集群
 添加现有集群到baiup
 ```
 baiup init clustername init.yaml
@@ -242,16 +223,7 @@ store: #store列表，只需host, port, path
 ``` 
 
 
-
-十、查看现有集群
-===
-```
-baiup cluster
-```
-
-
-十一、region相关命令
-===
+## region相关命令
 
 查询所有region：  
 ```
@@ -315,8 +287,7 @@ baiup region clustername peer-count store_id
 baiup region clustername peer-count=3 [store_addr|resource_tag=tagx]
 ```
 
-十二、meta相关命令
-===
+## meta相关命令
 
 关闭负载均衡： 
 ```
@@ -346,10 +317,7 @@ baiup meta clustername get-leader
 ```
 baiup meta clustername transfer-leader ip:port  #从此节点将leader迁走,若此节点无leader，不进行任何操
 ```
-
-
-十三、连接数据库
-===
+## 连接数据库
 连接到某个库
 ```
 baiup connect clustername dbname 
@@ -366,3 +334,5 @@ baiup connect clustername dbname  dbnode
 baiup connect clustername
 ```
 然后选择库名或序号
+
+
