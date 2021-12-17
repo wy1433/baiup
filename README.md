@@ -27,7 +27,7 @@ baiup是baikaldb集群运维管理工具，提供部署、启动、关闭、升�
 ## 第2步：在中控机器上安装baiup
 
 ```
-git clone https://github.com/baikalgroup/baiup
+git clone https://github.com/wy1433/baiup
 mv baiup ~/.baiup
 echo "export PATH" >> ~/.bash_profile
 echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
