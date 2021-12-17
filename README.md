@@ -1,6 +1,6 @@
 # 使用baiup部署baikaldb集群
 
-baiup是baikaldb集群运维管理工具，提供部署、启动、关闭、升级，配置、扩缩容、集群状态、集群管理、集群运维命令、数据库连接等功能。
+baiup是baikaldb集群运维管理工具，提供部署、启动、关闭、升级，配置、扩缩容、集群状态、集群添加、集群运维命令、数据库连接等功能。
 
 ## 第1步：软硬件环境准备
 
@@ -27,7 +27,7 @@ baiup是baikaldb集群运维管理工具，提供部署、启动、关闭、升�
 ## 第2步：在中控机器上安装baiup
 
 ```
-git clone https://github.com/wy1433/baiup
+git clone git@github.com:wy1433/baiup.git
 mv baiup ~/.baiup
 echo "export PATH" >> ~/.bash_profile
 echo "export PATH=~./baiup/bin:$PATH" >> ~/.bash_profile
@@ -37,7 +37,7 @@ source ~/.bash_profile
 ## 第3步：编写集群拓扑文件
 根据集群部署拓扑，编辑baiup所需的集群初始化配置文件，YAML格式。
 
-deploy.yaml文件实例如下：
+deploy.yaml文件示例如下：
 
 ```
 global:
