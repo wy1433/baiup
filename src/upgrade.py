@@ -88,11 +88,11 @@ class UpgradeProcessor():
 
 
     def checkVersion(self):
-	pkg = Package(self.version)
-	if not pkg.is_local():
-	    pkg.download()
+        pkg = Package(self.version)
+        if not pkg.is_local():
+            pkg.download()
         for binName in ('baikaldb', 'baikalMeta', 'baikalStore'):
-	    binPath = os.path.join(REPO_DIR, self.version, "bin")
+            binPath = os.path.join(REPO_DIR, self.version, "bin")
             binFile = os.path.join(binPath, binName)
             if not os.path.exists(binFile):
                 return self.version + "'s " + binName + " not found!"

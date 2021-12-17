@@ -23,7 +23,7 @@ class ClusterProcessor():
             exit(0)
         clusterDir = CLUSTER_DIR
         rows = []
-	if os.path.exists(clusterDir):
+        if os.path.exists(clusterDir):
             for cluster in os.listdir(clusterDir):
                 deployConfig = DeployConfig.loadClusterDeployConfig(cluster)
                 metaList = DeployConfig.getMetaList(deployConfig)
