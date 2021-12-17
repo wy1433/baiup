@@ -20,8 +20,8 @@ class Package():
         tmpDir = os.path.join(REPO_DIR, 'tmp')
         if not os.path.exists(os.path.join(tmpDir, self.version)):
             os.makedirs(os.path.join(tmpDir, self.version))
-        #gitaddr = 'https://github.com/baidu/BaikalDB/releases/download/%s/baikal-all-%s-centos-7.tgz' % (self.version, self.version)
-        gitaddr = 'http://10.100.217.153:80/package/%s.tgz' % self.version
+        gitaddr = 'https://github.com/baidu/BaikalDB/releases/download/%s/baikal-all-%s-centos-7.tgz' % (self.version, self.version)
+        #gitaddr = 'http://10.100.217.153:80/package/%s.tgz' % self.version
         print gitaddr
         print "downloading package ",self.version
         localFile = os.path.join(tmpDir, self.version + '.tgz')
